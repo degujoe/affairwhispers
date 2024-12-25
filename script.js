@@ -63,8 +63,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Handle "Load More" button click
   function handleLoadMore() {
-    currentPage++;
-    renderProfiles();
+    currentPage++; // Increment the current page
+    renderProfiles(); // Render the next set of profiles
   }
 
   // Fetch profiles data on page load
@@ -95,3 +95,4 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   }
 });
+
