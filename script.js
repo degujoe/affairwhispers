@@ -43,6 +43,34 @@ document.addEventListener('DOMContentLoaded', function () {
     .catch(error => console.error("Error loading profiles:", error));
 });
 
+let profilesToShow = 10;
+let currentPage = 1;
+
+function loadProfiles() {
+  fetch(`profiles.json`)
+    .then(response => response.json())
+    .then(data => {
+      const startIndex = (currentPage - 1) * profilesToShow;
+      const endIndex = startIndex + profilesToShow;
+      const profiles = data.profiles.slice(startIndex, endIndex);
+      
+      // Render the profiles on the page
+      profiles.forEach(profile => renderProfile(profile));
+
+      // Check if more profiles exist
+      if (endIndex >= data.profiles.length) {
+        document.getElementById('load-more').style.display = 'none';
+      }
+
+      currentPage++;
+    });
+}
+
+// Load initial profiles
+loadProfiles();
+
+// Add "Load More" button functionality
+document.getElementById('load-more').addEventListener('click', loadProfiles);
 // Modal for verified profiles
 function showVerifiedModal(name) {
   const modal = document.createElement('div');
