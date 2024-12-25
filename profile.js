@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
   const urlParams = new URLSearchParams(window.location.search);
   const userUrl = urlParams.get('user');
+  const profilesToRender = profilesData.slice(startIndex, endIndex);
+
 
   if (userUrl) {
     fetch('profiles.json')
