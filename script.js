@@ -16,8 +16,9 @@ document.addEventListener('DOMContentLoaded', function () {
             return 0;
           });
 
-          renderProfiles(); // Render the initial set of profiles
-          updatePaginationControls(); // Update pagination controls
+          console.log('Fetched Profiles:', profilesData); // Debugging: Ensure profilesData is populated
+          renderProfiles(); // Render the first page
+          updatePaginationControls(); // Update the pagination controls
         } else {
           document.getElementById('profiles-list').innerHTML = '<p>No profiles found.</p>';
         }
@@ -28,11 +29,13 @@ document.addEventListener('DOMContentLoaded', function () {
   // Render profiles for the current page
   function renderProfiles() {
     const profilesList = document.getElementById('profiles-list');
-    profilesList.innerHTML = ''; // Clear the existing profiles
+    profilesList.innerHTML = ''; // Clear existing profiles
 
     const startIndex = (currentPage - 1) * profilesPerPage;
     const endIndex = startIndex + profilesPerPage;
-    const profilesToRender = profilesData.slice(startIndex, endIndex); // Slice profiles for the current page
+    const profilesToRender = profilesData.slice(startIndex, endIndex);
+
+    console.log(`Rendering Profiles (Page ${currentPage}):`, profilesToRender); // Debugging: Ensure correct slice is rendered
 
     profilesToRender.forEach((profile) => {
       const profileCard = document.createElement('div');
@@ -68,14 +71,15 @@ document.addEventListener('DOMContentLoaded', function () {
     nextButton.disabled = currentPage === totalPages; // Disable "Next" on the last page
 
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    console.log(`Pagination Updated: Page ${currentPage} of ${totalPages}`); // Debugging: Check pagination state
   }
 
   // Handle "Previous" button click
   function handlePrevPage() {
     if (currentPage > 1) {
-      currentPage--; // Decrease the page number
-      renderProfiles(); // Render the previous set of profiles
-      updatePaginationControls(); // Update the controls
+      currentPage--; // Move to the previous page
+      renderProfiles(); // Render the profiles for the previous page
+      updatePaginationControls(); // Update controls
     }
   }
 
@@ -83,9 +87,9 @@ document.addEventListener('DOMContentLoaded', function () {
   function handleNextPage() {
     const totalPages = Math.ceil(profilesData.length / profilesPerPage);
     if (currentPage < totalPages) {
-      currentPage++; // Increase the page number
-      renderProfiles(); // Render the next set of profiles
-      updatePaginationControls(); // Update the controls
+      currentPage++; // Move to the next page
+      renderProfiles(); // Render the profiles for the next page
+      updatePaginationControls(); // Update controls
     }
   }
 
@@ -96,5 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('prev-page').addEventListener('click', handlePrevPage);
   document.getElementById('next-page').addEventListener('click', handleNextPage);
 });
+
 
 
