@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   let profilesData = []; // Store all profiles data
-  let profilesToShow = 10; // Number of profiles to show per page
+  const profilesPerPage = 10; // Number of profiles to show per page
   let currentPage = 1; // Current page number
 
   // Fetch and store profiles data
@@ -11,16 +11,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.profiles && data.profiles.length > 0) {
           // Sort profiles: London first
           profilesData = data.profiles.sort((a, b) => {
-            if (a.region === 'London' && b.region !== 'London') {
-              return -1;
-            } else if (a.region !== 'London' && b.region === 'London') {
-              return 1;
-            } else {
-              return 0;
-            }
+            if (a.region === 'London' && b.region !== 'London') return -1;
+            if (a.region !== 'London' && b.region === 'London') return 1;
+            return 0;
           });
 
           renderProfiles(); // Render the initial set of profiles
+          updatePaginationControls(); // Update the pagination controls
         } else {
           document.getElementById('profiles-list').innerHTML = '<p>No profiles found.</p>';
         }
@@ -31,15 +28,17 @@ document.addEventListener('DOMContentLoaded', function () {
   // Render profiles for the current page
   function renderProfiles() {
     const profilesList = document.getElementById('profiles-list');
-    const startIndex = (currentPage - 1) * profilesToShow;
-    const endIndex = startIndex + profilesToShow;
+    profilesList.innerHTML = ''; // Clear the existing profiles
+
+    const startIndex = (currentPage - 1) * profilesPerPage;
+    const endIndex = startIndex + profilesPerPage;
     const profilesToRender = profilesData.slice(startIndex, endIndex);
 
     profilesToRender.forEach(profile => {
       const profileCard = document.createElement('div');
       profileCard.classList.add('profile-card');
 
-      // Make the profile card clickable
+      // Make the profile clickable
       profileCard.onclick = () => window.location.href = `profile.html?user=${encodeURIComponent(profile.URL)}`;
 
       const profileImage = profile.images[0] || 'https://via.placeholder.com/150';
@@ -54,45 +53,47 @@ document.addEventListener('DOMContentLoaded', function () {
 
       profilesList.appendChild(profileCard);
     });
+  }
 
-    // Hide the "Load More" button if all profiles are displayed
-    if (endIndex >= profilesData.length) {
-      document.getElementById('load-more').style.display = 'none';
+  // Update the pagination controls
+  function updatePaginationControls() {
+    const totalPages = Math.ceil(profilesData.length / profilesPerPage);
+
+    const prevButton = document.getElementById('prev-page');
+    const nextButton = document.getElementById('next-page');
+    const pageInfo = document.getElementById('page-info');
+
+    prevButton.disabled = currentPage === 1; // Disable "Previous" on the first page
+    nextButton.disabled = currentPage === totalPages; // Disable "Next" on the last page
+
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+  }
+
+  // Handle "Previous" button click
+  function handlePrevPage() {
+    if (currentPage > 1) {
+      currentPage--; // Move to the previous page
+      renderProfiles();
+      updatePaginationControls();
     }
   }
 
-  // Handle "Load More" button click
-  function handleLoadMore() {
-    currentPage++; // Increment the current page
-    renderProfiles(); // Render the next set of profiles
+  // Handle "Next" button click
+  function handleNextPage() {
+    const totalPages = Math.ceil(profilesData.length / profilesPerPage);
+    if (currentPage < totalPages) {
+      currentPage++; // Move to the next page
+      renderProfiles();
+      updatePaginationControls();
+    }
   }
 
-  // Fetch profiles data on page load
+  // Fetch profiles on page load
   fetchProfiles();
 
-  // Add event listener to "Load More" button
-  const loadMoreButton = document.getElementById('load-more');
-  loadMoreButton.addEventListener('click', handleLoadMore);
-
-  // Modal for verified profiles
-  function showVerifiedModal(name) {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <p><strong>${name}</strong> has provided photo ID to prove their identity.</p>
-        <button onclick="closeModal()">Close</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  }
-
-  // Close modal function
-  function closeModal() {
-    const modal = document.querySelector('.modal');
-    if (modal) {
-      modal.remove();
-    }
-  }
+  // Add event listeners for pagination buttons
+  document.getElementById('prev-page').addEventListener('click', handlePrevPage);
+  document.getElementById('next-page').addEventListener('click', handleNextPage);
 });
+
 
