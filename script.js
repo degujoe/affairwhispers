@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
   let profilesData = []; // Store all profiles data
-  const profilesPerPage = 10; // Number of profiles to show per page
+  const profilesPerPage = 10; // Number of profiles to display per page
   let currentPage = 1; // Current page number
 
   // Fetch profiles data
@@ -64,8 +64,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const nextButton = document.getElementById('next-page');
     const pageInfo = document.getElementById('page-info');
 
-    prevButton.disabled = currentPage === 1; // Disable "Previous" on the first page
-    nextButton.disabled = currentPage === totalPages; // Disable "Next" on the last page
+    prevButton.disabled = currentPage === 1;
+    nextButton.disabled = currentPage === totalPages;
 
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
   }
@@ -73,9 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // Handle "Previous" button click
   function handlePrevPage() {
     if (currentPage > 1) {
-      currentPage--; // Move to the previous page
-      renderProfiles(); // Render the previous set of profiles
-      updatePaginationControls(); // Update controls
+      currentPage--;
+      renderProfiles();
+      updatePaginationControls();
     }
   }
 
@@ -83,9 +83,9 @@ document.addEventListener('DOMContentLoaded', function () {
   function handleNextPage() {
     const totalPages = Math.ceil(profilesData.length / profilesPerPage);
     if (currentPage < totalPages) {
-      currentPage++; // Move to the next page
-      renderProfiles(); // Render the next set of profiles
-      updatePaginationControls(); // Update controls
+      currentPage++;
+      renderProfiles();
+      updatePaginationControls();
     }
   }
 
@@ -96,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('prev-page').addEventListener('click', handlePrevPage);
   document.getElementById('next-page').addEventListener('click', handleNextPage);
 });
+
 
 
 
