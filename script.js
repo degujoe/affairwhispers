@@ -1,101 +1,68 @@
 document.addEventListener('DOMContentLoaded', function () {
-  let profilesData = []; // Store all profiles data
-  const profilesPerPage = 10; // Number of profiles to show per page
-  let currentPage = 1; // Current page number
+  fetch('profiles.json')
+    .then(response => response.json())
+    .then(data => {
+      const profilesList = document.getElementById('profiles-list');
+      profilesList.innerHTML = '';
 
-  // Fetch and store profiles data
-  function fetchProfiles() {
-    fetch('profiles.json')
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.profiles && data.profiles.length > 0) {
-          // Sort profiles: London first
-          profilesData = data.profiles.sort((a, b) => {
-            if (a.region === 'London' && b.region !== 'London') return -1;
-            if (a.region !== 'London' && b.region === 'London') return 1;
-            return 0;
-          });
+      if (data.profiles && data.profiles.length > 0) {
+        // Sort profiles: London first
+        const sortedProfiles = data.profiles.sort((a, b) => {
+          if (a.region === 'London' && b.region !== 'London') {
+            return -1; // "London" profiles come first
+          } else if (a.region !== 'London' && b.region === 'London') {
+            return 1; // Other profiles come later
+          } else {
+            return 0; // Preserve order for other profiles
+          }
+        });
 
-          renderProfiles(); // Render the first page
-          updatePaginationControls(); // Update the pagination controls
-        } else {
-          document.getElementById('profiles-list').innerHTML = '<p>No profiles found.</p>';
-        }
-      })
-      .catch((error) => console.error("Error loading profiles:", error));
-  }
-
-  // Render profiles for the current page
-  function renderProfiles() {
-    const profilesList = document.getElementById('profiles-list');
-    profilesList.innerHTML = ''; // Clear existing profiles
-
-    const startIndex = (currentPage - 1) * profilesPerPage;
-    const endIndex = startIndex + profilesPerPage;
-    const profilesToRender = profilesData.slice(startIndex, endIndex);
-
-    profilesToRender.forEach((profile) => {
-      const profileCard = document.createElement('div');
-      profileCard.classList.add('profile-card');
-
-      // Make the profile clickable
-      profileCard.onclick = () =>
-        window.location.href = `profile.html?user=${encodeURIComponent(profile.URL)}`;
-
-      const profileImage = profile.images[0] || 'https://via.placeholder.com/150';
-      profileCard.innerHTML = `
-        <img src="${profileImage}" alt="${profile.name}">
-        <div class="profile-info">
-          <div class="profile-name">${profile.name}</div>
-          <div class="profile-details">${profile.age} y/o - ${profile.gender} - ${profile.town} - ${profile.region}</div>
-        </div>
-        <div class="profile-badge">ID Verified</div>
-      `;
-
-      profilesList.appendChild(profileCard);
-    });
-  }
-
-  // Update pagination controls
-  function updatePaginationControls() {
-    const totalPages = Math.ceil(profilesData.length / profilesPerPage);
-
-    const prevButton = document.getElementById('prev-page');
-    const nextButton = document.getElementById('next-page');
-    const pageInfo = document.getElementById('page-info');
-
-    prevButton.disabled = currentPage === 1; // Disable "Previous" on the first page
-    nextButton.disabled = currentPage === totalPages; // Disable "Next" on the last page
-
-    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-  }
-
-  // Handle "Previous" button click
-  function handlePrevPage() {
-    if (currentPage > 1) {
-      currentPage--; // Move to the previous page
-      renderProfiles(); // Render the profiles for the previous page
-      updatePaginationControls(); // Update controls
-    }
-  }
-
-  // Handle "Next" button click
-  function handleNextPage() {
-    const totalPages = Math.ceil(profilesData.length / profilesPerPage);
-    if (currentPage < totalPages) {
-      currentPage++; // Move to the next page
-      renderProfiles(); // Render the profiles for the next page
-      updatePaginationControls(); // Update controls
-    }
-  }
-
-  // Fetch profiles on page load
-  fetchProfiles();
-
-  // Add event listeners for pagination buttons
-  document.getElementById('prev-page').addEventListener('click', handlePrevPage);
-  document.getElementById('next-page').addEventListener('click', handleNextPage);
+        // Render sorted profiles
+        sortedProfiles.forEach(profile => {
+          const profileCard = document.createElement('div');
+          profileCard.classList.add('profile-card');
+          
+          // Make the profile card clickable
+          profileCard.onclick = () => window.location.href = `profile.html?user=${encodeURIComponent(profile.URL)}`;
+          
+          const profileImage = profile.images[0] || 'https://via.placeholder.com/150';
+          profileCard.innerHTML = `
+            <img src="${profileImage}" alt="${profile.name}">
+            <div class="profile-info">
+              <div class="profile-name">${profile.name}</div>
+              <div class="profile-details">${profile.age} y/o - ${profile.gender} - ${profile.town} - ${profile.region}</div>
+            </div>
+            <div class="profile-badge">ID Verified</div>
+          `;
+          profilesList.appendChild(profileCard);
+        });
+      } else {
+        profilesList.innerHTML = '<p>No profiles found.</p>';
+      }
+    })
+    .catch(error => console.error("Error loading profiles:", error));
 });
+
+// Modal for verified profiles
+function showVerifiedModal(name) {
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <p><strong>${name}</strong> has provided photo ID to prove their identity.</p>
+      <button onclick="closeModal()">Close</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+// Close modal function
+function closeModal() {
+  const modal = document.querySelector('.modal');
+  if (modal) {
+    modal.remove();
+  }
+}
 
 
 
