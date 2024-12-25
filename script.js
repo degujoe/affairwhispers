@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', function () {
   // Fetch and store profiles data
   function fetchProfiles() {
     fetch('profiles.json')
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.profiles && data.profiles.length > 0) {
           // Sort profiles: London first
           profilesData = data.profiles.sort((a, b) => {
@@ -17,12 +17,12 @@ document.addEventListener('DOMContentLoaded', function () {
           });
 
           renderProfiles(); // Render the initial set of profiles
-          updatePaginationControls(); // Update the pagination controls
+          updatePaginationControls(); // Update pagination controls
         } else {
           document.getElementById('profiles-list').innerHTML = '<p>No profiles found.</p>';
         }
       })
-      .catch(error => console.error("Error loading profiles:", error));
+      .catch((error) => console.error("Error loading profiles:", error));
   }
 
   // Render profiles for the current page
@@ -32,14 +32,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const startIndex = (currentPage - 1) * profilesPerPage;
     const endIndex = startIndex + profilesPerPage;
-    const profilesToRender = profilesData.slice(startIndex, endIndex);
+    const profilesToRender = profilesData.slice(startIndex, endIndex); // Slice profiles for the current page
 
-    profilesToRender.forEach(profile => {
+    profilesToRender.forEach((profile) => {
       const profileCard = document.createElement('div');
       profileCard.classList.add('profile-card');
 
       // Make the profile clickable
-      profileCard.onclick = () => window.location.href = `profile.html?user=${encodeURIComponent(profile.URL)}`;
+      profileCard.onclick = () =>
+        window.location.href = `profile.html?user=${encodeURIComponent(profile.URL)}`;
 
       const profileImage = profile.images[0] || 'https://via.placeholder.com/150';
       profileCard.innerHTML = `
@@ -55,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // Update the pagination controls
+  // Update pagination controls
   function updatePaginationControls() {
     const totalPages = Math.ceil(profilesData.length / profilesPerPage);
 
@@ -72,9 +73,9 @@ document.addEventListener('DOMContentLoaded', function () {
   // Handle "Previous" button click
   function handlePrevPage() {
     if (currentPage > 1) {
-      currentPage--; // Move to the previous page
-      renderProfiles();
-      updatePaginationControls();
+      currentPage--; // Decrease the page number
+      renderProfiles(); // Render the previous set of profiles
+      updatePaginationControls(); // Update the controls
     }
   }
 
@@ -82,9 +83,9 @@ document.addEventListener('DOMContentLoaded', function () {
   function handleNextPage() {
     const totalPages = Math.ceil(profilesData.length / profilesPerPage);
     if (currentPage < totalPages) {
-      currentPage++; // Move to the next page
-      renderProfiles();
-      updatePaginationControls();
+      currentPage++; // Increase the page number
+      renderProfiles(); // Render the next set of profiles
+      updatePaginationControls(); // Update the controls
     }
   }
 
