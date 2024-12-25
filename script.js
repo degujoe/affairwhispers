@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return 0;
           });
 
-          console.log('Fetched Profiles:', profilesData); // Debugging: Ensure profilesData is populated
           renderProfiles(); // Render the first page
           updatePaginationControls(); // Update the pagination controls
         } else {
@@ -34,8 +33,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const startIndex = (currentPage - 1) * profilesPerPage;
     const endIndex = startIndex + profilesPerPage;
     const profilesToRender = profilesData.slice(startIndex, endIndex);
-
-    console.log(`Rendering Profiles (Page ${currentPage}):`, profilesToRender); // Debugging: Ensure correct slice is rendered
 
     profilesToRender.forEach((profile) => {
       const profileCard = document.createElement('div');
@@ -71,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function () {
     nextButton.disabled = currentPage === totalPages; // Disable "Next" on the last page
 
     pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
-    console.log(`Pagination Updated: Page ${currentPage} of ${totalPages}`); // Debugging: Check pagination state
   }
 
   // Handle "Previous" button click
@@ -100,6 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('prev-page').addEventListener('click', handlePrevPage);
   document.getElementById('next-page').addEventListener('click', handleNextPage);
 });
+
 
 
 
