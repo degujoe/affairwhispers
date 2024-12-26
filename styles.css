@@ -255,3 +255,68 @@ ul li {
   margin: 5px 0;
 }
 
+/* Modal Styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Dim background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.modal-content h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  color: #6a0dad;
+}
+
+.modal-content p {
+  font-size: 1em;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.modal-content button {
+  padding: 10px 20px;
+  font-size: 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#proceed-to-payment {
+  background-color: #6a0dad;
+  color: white;
+  margin-right: 10px;
+}
+
+#proceed-to-payment:hover {
+  background-color: #580ea1;
+}
+
+.modal-content button:last-of-type {
+  background-color: #e0e0e0;
+  color: #333;
+}
+
+.modal-content button:last-of-type:hover {
+  background-color: #c0c0c0;
+}
+
+
