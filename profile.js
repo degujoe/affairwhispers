@@ -92,17 +92,13 @@ function showSubscriptionPopup(profile) {
   modal.className = 'modal';
   modal.innerHTML = `
     <div class="modal-content">
-     <h2>Get Full Access to Contact Details</h2>
+     <h2>Get Full Access to AffairWhispers</h2>
 <p>Join <strong>AffairWhispers</strong> and unlock exclusive features:</p>
 <ul class="subscription-benefits">
   <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
   <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-  <li><strong>Recent Activity Status:</strong> See who’s actively online and looking for connections.</li>
   <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
-  <li><strong>Premium Matchmaking:</strong> Get priority visibility and connect faster.</li>
   <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-</ul>
-<p><strong>All this for just £30/month!</strong> Start your journey to meaningful connections today.</p>
 <button id="proceed-to-payment">Subscribe Now</button>
 <button onclick="closeModal()">Cancel</button>
 
