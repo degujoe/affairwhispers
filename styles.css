@@ -318,6 +318,38 @@ ul li {
 .modal-content button:last-of-type:hover {
   background-color: #c0c0c0;
 }
+header {
+  position: relative;
+  background-color: #6a0dad;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+#signup-button {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background-color: white;
+  color: #6a0dad;
+  padding: 10px 15px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#signup-button:hover {
+  background-color: #e0d7f6;
+  color: #6a0dad;
+}
+
 
 
 
