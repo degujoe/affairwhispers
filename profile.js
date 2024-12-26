@@ -59,45 +59,16 @@ document.addEventListener('DOMContentLoaded', function () {
             reviewsSection.appendChild(reviewDiv);
           });
 
-          // Populate ratings
-          const ratingsSection = document.getElementById('profile-ratings');
-          profile.ratings.forEach(rating => {
-            const ratingDiv = document.createElement('div');
-            ratingDiv.className = 'rating';
-            ratingDiv.innerHTML = `
-              <p><strong>By:</strong> ${rating.rating_by}</p>
-              <p><strong>Date:</strong> ${rating.rating_date}</p>
-              <p>${rating.rating_description}</p>
-            `;
-            ratingsSection.appendChild(ratingDiv);
-          });
-
           // Handle Contact Now functionality
           const contactButton = document.getElementById('contact-now-button');
-          const contactDetails = document.getElementById('contact-details');
           contactButton.addEventListener('click', async () => {
             const isMember = await checkMembership();
             if (isMember) {
               // Reveal phone number and rates
               document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
-
-              const inCallRates = document.getElementById('in-call-rates');
-              for (const [time, rate] of Object.entries(profile.rates.in_calls)) {
-                const li = document.createElement('li');
-                li.textContent = `${time}: ${rate === '-' ? 'N/A' : rate}`;
-                inCallRates.appendChild(li);
-              }
-
-              const outCallRates = document.getElementById('out-call-rates');
-              for (const [time, rate] of Object.entries(profile.rates.out_calls)) {
-                const li = document.createElement('li');
-                li.textContent = `${time}: ${rate === '-' ? 'N/A' : rate}`;
-                outCallRates.appendChild(li);
-              }
-
               contactDetails.classList.remove('hidden');
             } else {
-              redirectToPayment();
+              showSubscriptionPopup(profile);
             }
           });
         }
@@ -113,6 +84,23 @@ async function checkMembership() {
     const isMember = localStorage.getItem('isMember') === 'true';
     resolve(isMember);
   });
+}
+
+// Show Subscription Popup
+function showSubscriptionPopup(profile) {
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>Subscribe to Access Contact Details</h2>
+      <p>Unlock contact details for just <strong>£30/month</strong>. Your subscription includes access to all profiles and exclusive features.</p>
+      <button id="proceed-to-payment">Proceed to Payment</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  document.getElementById('proceed-to-payment').addEventListener('click', redirectToPayment);
 }
 
 // Redirect to Stripe payment page
@@ -153,4 +141,5 @@ function closeModal() {
   const modal = document.querySelector('.modal');
   if (modal) modal.remove();
 }
+
 
