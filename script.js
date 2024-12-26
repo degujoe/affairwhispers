@@ -1,3 +1,16 @@
+import app from './firebase-config.js'; // Ensure correct path
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
+
+// Initialize Firebase services
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+console.log("Firebase services initialized.");
+
+
+
+
 document.addEventListener('DOMContentLoaded', function () {
   let profilesData = []; // Store all profiles data
   const profilesPerPage = 10; // Number of profiles to display per page
