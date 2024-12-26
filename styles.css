@@ -332,28 +332,24 @@ header h1 {
 }
 
 #signup-button {
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  background-color: #6a0dad; /* Main button color */
+  position: absolute; /* Keep it positioned in the banner */
+  top: 15px; /* Adjust from top of the header */
+  right: 20px; /* Adjust from right of the header */
+  background-color: #6a0dad; /* Primary button color */
   color: #ffffff; /* White text */
-  padding: 12px 25px; /* Increased padding for better appearance */
-  text-align: center;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 30px; /* Smooth rounded corners */
-  font-size: 1rem; /* Slightly larger font size */
-  border: none; /* Removed border for a cleaner look */
-  cursor: pointer; /* Pointer to indicate interactivity */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Stronger shadow for depth */
-  transition: all 0.3s ease; /* Smooth hover transition */
+  padding: 10px 20px; /* Space inside the button */
+  font-size: 1rem; /* Font size */
+  font-weight: bold; /* Make text bold */
+  border: none; /* Remove default borders */
+  border-radius: 5px; /* Slightly rounded corners */
+  cursor: pointer; /* Change cursor on hover */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add some shadow for depth */
+  transition: all 0.3s ease; /* Smooth transitions on hover */
 }
 
 #signup-button:hover {
-  background-color: #ffffff; /* Change background to white on hover */
-  color: #6a0dad; /* Change text to main color on hover */
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3); /* Slightly larger shadow on hover */
-  transform: translateY(-2px); /* Subtle upward movement on hover */
+  background-color: #5b0ba8; /* Darker purple on hover */
+  transform: translateY(-2px); /* Slight upward movement */
 }
 
 }
