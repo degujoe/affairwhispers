@@ -97,17 +97,6 @@ document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('next-page').addEventListener('click', handleNextPage);
 });
 
-import app from './firebase-config.js';
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-
-// Initialize Firebase Auth and Firestore
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Example usage of Firestore
-console.log("Firebase app initialized:", app);
-
 
 
 
