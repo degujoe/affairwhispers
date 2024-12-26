@@ -319,21 +319,5 @@ ul li {
   background-color: #c0c0c0;
 }
 
-.signup-button {
-  background-color: #6a0dad;
-  color: #fff;
-  padding: 10px 20px;
-  text-decoration: none;
-  border-radius: 5px;
-  font-weight: bold;
-  float: right;
-  margin-right: 20px;
-  transition: background-color 0.3s ease;
-}
-
-.signup-button:hover {
-  background-color: #8a2be2;
-}
-
 
 
