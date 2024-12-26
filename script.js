@@ -1,17 +1,3 @@
-import app from './firebase-config.js';
-import { getAuth } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore.js";
-
-// Initialize Firebase services
-try {
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-
-  console.log("Firebase Auth and Firestore initialized.");
-} catch (error) {
-  console.error("Error initializing Firebase services:", error);
-}
-
 document.addEventListener('DOMContentLoaded', function () {
   let profilesData = []; // Store all profiles data
   const profilesPerPage = 10; // Number of profiles to display per page
