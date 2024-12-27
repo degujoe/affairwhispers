@@ -122,7 +122,7 @@ function showSubscriptionPopup() {
 
 // Redirect to Stripe payment page
 function redirectToPayment(email) {
-  fetch("/create-checkout-session", {
+  fetch("https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email }),
