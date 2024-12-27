@@ -92,16 +92,17 @@ function showSubscriptionPopup(profile) {
   modal.className = 'modal';
   modal.innerHTML = `
     <div class="modal-content">
-     <h2>Get Full Access to AffairWhispers</h2>
-<p>Join <strong>AffairWhispers</strong> and unlock exclusive features:</p>
-<ul class="subscription-benefits">
-  <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
-  <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-  <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
-  <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-<button id="proceed-to-payment">Subscribe Now</button>
-<button onclick="closeModal()">Cancel</button>
-
+      <h2>Get Full Access to AffairWhispers</h2>
+      <p>Join <strong>AffairWhispers</strong> and unlock exclusive features:</p>
+      <ul class="subscription-benefits">
+        <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
+        <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
+        <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+        <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+      </ul>
+      <button id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
+      <p>Already a member? <a id="login-link" href="login.html">Log In</a></p>
+      <button onclick="closeModal()" class="btn-secondary">Cancel</button>
     </div>
   `;
   document.body.appendChild(modal);
