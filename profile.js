@@ -110,46 +110,32 @@ function showSubscriptionPopup() {
   `;
   document.body.appendChild(modal);
 
-  // Handle subscription form submission
   const subscribeForm = document.getElementById("subscribe-form");
   subscribeForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const email = document.getElementById("subscription-email").value.trim();
+    const email = document.getElementById("subscription-email").value;
     if (email) {
       redirectToPayment(email);
-    } else {
-      alert("Please enter a valid email address.");
     }
   });
 }
 
 // Redirect to Stripe payment page
 function redirectToPayment(email) {
-  fetch("https://<your-server-endpoint>/create-checkout-session", {
+  fetch("/create-checkout-session", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }), // Send the email to the backend
+    body: JSON.stringify({ email }),
   })
     .then((response) => response.json())
     .then((data) => {
-      if (data.sessionId) {
-        const stripe = Stripe("pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B");
-        stripe.redirectToCheckout({ sessionId: data.sessionId });
-      } else {
-        alert("Failed to create checkout session. Please try again.");
-      }
+      const stripe = Stripe("pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B");
+      return stripe.redirectToCheckout({ sessionId: data.sessionId });
     })
     .catch((error) => {
       console.error("Error redirecting to payment:", error);
-      alert("An error occurred. Please try again later.");
     });
 }
-
-function closeModal() {
-  const modal = document.querySelector(".modal");
-  if (modal) modal.remove();
-}
-
 
 function showImageInModal(imageSrc) {
   const modal = document.createElement("div");
@@ -167,5 +153,6 @@ function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
+
 
 
