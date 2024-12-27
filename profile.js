@@ -150,4 +150,3 @@ function closeModal() {
   if (modal) modal.remove();
 }
 
-
