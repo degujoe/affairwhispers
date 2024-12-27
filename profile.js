@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
           document.getElementById('profile-name-heading').textContent = profile.name;
           document.getElementById('profile-age').textContent = profile.age;
           document.getElementById('profile-gender').textContent = profile.gender;
-          document.getElementById('profile-location').textContent = `${profile.town}, ${profile.county}, ${profile.region}, ${profile.country}`;
+          document.getElementById('profile-location').textContent = ${profile.town}, ${profile.county}, ${profile.region}, ${profile.country};
           document.getElementById('profile-ethnicity').textContent = profile.ethnicity;
           document.getElementById('profile-height').textContent = profile.height;
           document.getElementById('profile-hair').textContent = profile.hair_colour;
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
           profile.images.forEach(image => {
             const img = document.createElement('img');
             img.src = image;
-            img.alt = `${profile.name}'s photo`;
+            img.alt = ${profile.name}'s photo;
             img.className = 'thumbnail';
             img.onclick = () => showImageInModal(image);
             thumbnailsContainer.appendChild(img);
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
           profile.reviews.forEach(review => {
             const reviewDiv = document.createElement('div');
             reviewDiv.className = 'review';
-            reviewDiv.innerHTML = `
+            reviewDiv.innerHTML = 
               <p><strong>By:</strong> ${review.report_by}</p>
               <p><strong>Date:</strong> ${review.meet_date}</p>
               <p><strong>Overall Rating:</strong> ${review.overall_rating}</p>
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
               <p>${review.physical_description}</p>
               <p><strong>Personality Rating:</strong> ${review.personality_score}</p>
               <p>${review.personality_description}</p>
-            `;
+            ;
             reviewsSection.appendChild(reviewDiv);
           });
 
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
               document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
               contactDetails.classList.remove('hidden');
             } else {
-              showSubscriptionPopup();
+              showSubscriptionPopup(profile);
             }
           });
         }
@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Simulate membership check
 async function checkMembership() {
+  // Replace with backend check
   return new Promise((resolve) => {
     const isMember = localStorage.getItem('isMember') === 'true';
     resolve(isMember);
@@ -86,73 +87,67 @@ async function checkMembership() {
 }
 
 // Show Subscription Popup
-function showSubscriptionPopup() {
+function showSubscriptionPopup(profile) {
   const modal = document.createElement('div');
   modal.className = 'modal';
-  modal.innerHTML = `
+  modal.innerHTML = 
     <div class="modal-content">
-      <h2>Subscribe to AffairWhispers</h2>
-      <p>Unlock exclusive features:</p>
+      <h2>Get Full Access to AffairWhispers</h2>
+      <p>Join <strong>AffairWhispers</strong> and unlock exclusive features:</p>
       <ul class="subscription-benefits">
         <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
         <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
         <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
         <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+        <li><strong>Discreet Billing:</strong> Appears as "AMZNMKTPLACE" in bank statements (same as purchasing from Amazon) .</li>
       </ul>
-      <form id="subscribe-form">
-        <label for="subscription-email">Enter your email to subscribe:</label>
-        <input type="email" id="subscription-email" placeholder="Email" required>
-        <button type="submit" id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
-      </form>
-      <p>Already a member? <a href="login.html">Log In</a></p>
+      <button id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
+      <p>Already a member? <a id="login-link" href="login.html">Log In</a></p>
       <button onclick="closeModal()" class="btn-secondary">Cancel</button>
     </div>
-  `;
+  ;
   document.body.appendChild(modal);
 
-  const subscribeForm = document.getElementById("subscribe-form");
-  subscribeForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = document.getElementById("subscription-email").value;
-    if (email) {
-      redirectToPayment(email);
+  document.getElementById('proceed-to-payment').addEventListener('click', redirectToPayment);
+}
+
+// Redirect to Stripe payment page
+function redirectToPayment() {
+  const stripePublicKey = 'pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B'; // Replace with your Stripe public key
+  const stripe = Stripe(stripePublicKey);
+
+  stripe.redirectToCheckout({
+    lineItems: [
+      {
+        price: 'price_1QZttOB0HvM76eskACyPw35o', // Replace with your Stripe price ID
+        quantity: 1,
+      },
+    ],
+    mode: 'subscription',
+    successUrl: window.location.href + '&paid=true',
+    cancelUrl: window.location.href,
+  }).then((result) => {
+    if (result.error) {
+      alert(result.error.message);
     }
   });
 }
 
-// Redirect to Stripe payment page
-function redirectToPayment(email) {
-  fetch("https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const stripe = Stripe("pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B");
-      return stripe.redirectToCheckout({ sessionId: data.sessionId });
-    })
-    .catch((error) => {
-      console.error("Error redirecting to payment:", error);
-    });
-}
-
 function showImageInModal(imageSrc) {
-  const modal = document.createElement("div");
-  modal.className = "modal";
-  modal.innerHTML = `
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = 
     <div class="modal-content">
       <img src="${imageSrc}" class="modal-image" alt="Profile Image">
       <span class="close-modal" onclick="closeModal()">×</span>
     </div>
-  `;
+  ;
   document.body.appendChild(modal);
 }
 
 function closeModal() {
-  const modal = document.querySelector(".modal");
+  const modal = document.querySelector('.modal');
   if (modal) modal.remove();
 }
-
 
 
