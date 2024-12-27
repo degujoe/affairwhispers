@@ -99,6 +99,7 @@ function showSubscriptionPopup(profile) {
         <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
         <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
         <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+        <li><strong>Discreet Billing:</strong> Appears as "AMZNMKTPLACE" in bank statements.</li>
       </ul>
       <button id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
       <p>Already a member? <a id="login-link" href="login.html">Log In</a></p>
