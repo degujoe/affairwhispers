@@ -110,32 +110,46 @@ function showSubscriptionPopup() {
   `;
   document.body.appendChild(modal);
 
+  // Handle subscription form submission
   const subscribeForm = document.getElementById("subscribe-form");
   subscribeForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    const email = document.getElementById("subscription-email").value;
+    const email = document.getElementById("subscription-email").value.trim();
     if (email) {
       redirectToPayment(email);
+    } else {
+      alert("Please enter a valid email address.");
     }
   });
 }
 
 // Redirect to Stripe payment page
 function redirectToPayment(email) {
-  fetch("/create-checkout-session", {
+  fetch("https://<your-server-endpoint>/create-checkout-session", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email }), // Send the email to the backend
   })
     .then((response) => response.json())
     .then((data) => {
-      const stripe = Stripe("pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B");
-      return stripe.redirectToCheckout({ sessionId: data.sessionId });
+      if (data.sessionId) {
+        const stripe = Stripe("pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B");
+        stripe.redirectToCheckout({ sessionId: data.sessionId });
+      } else {
+        alert("Failed to create checkout session. Please try again.");
+      }
     })
     .catch((error) => {
       console.error("Error redirecting to payment:", error);
+      alert("An error occurred. Please try again later.");
     });
 }
+
+function closeModal() {
+  const modal = document.querySelector(".modal");
+  if (modal) modal.remove();
+}
+
 
 function showImageInModal(imageSrc) {
   const modal = document.createElement("div");
