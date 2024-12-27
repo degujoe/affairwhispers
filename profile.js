@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
               document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
               contactDetails.classList.remove('hidden');
             } else {
-              showSubscriptionPopup(profile);
+              showSubscriptionPopup();
             }
           });
         }
@@ -79,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Simulate membership check
 async function checkMembership() {
-  // Replace with backend check
   return new Promise((resolve) => {
     const isMember = localStorage.getItem('isMember') === 'true';
     resolve(isMember);
@@ -87,55 +86,60 @@ async function checkMembership() {
 }
 
 // Show Subscription Popup
-function showSubscriptionPopup(profile) {
+function showSubscriptionPopup() {
   const modal = document.createElement('div');
   modal.className = 'modal';
   modal.innerHTML = `
     <div class="modal-content">
-      <h2>Get Full Access to AffairWhispers</h2>
-      <p>Join <strong>AffairWhispers</strong> and unlock exclusive features:</p>
+      <h2>Subscribe to AffairWhispers</h2>
+      <p>Unlock exclusive features:</p>
       <ul class="subscription-benefits">
         <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
         <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
         <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
         <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-        <li><strong>Discreet Billing:</strong> Appears as "AMZNMKTPLACE" in bank statements (same as purchasing from Amazon) .</li>
       </ul>
-      <button id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
-      <p>Already a member? <a id="login-link" href="login.html">Log In</a></p>
+      <form id="subscribe-form">
+        <label for="subscription-email">Enter your email to subscribe:</label>
+        <input type="email" id="subscription-email" placeholder="Email" required>
+        <button type="submit" id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
+      </form>
+      <p>Already a member? <a href="login.html">Log In</a></p>
       <button onclick="closeModal()" class="btn-secondary">Cancel</button>
     </div>
   `;
   document.body.appendChild(modal);
 
-  document.getElementById('proceed-to-payment').addEventListener('click', redirectToPayment);
-}
-
-// Redirect to Stripe payment page
-function redirectToPayment() {
-  const stripePublicKey = 'pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B'; // Replace with your Stripe public key
-  const stripe = Stripe(stripePublicKey);
-
-  stripe.redirectToCheckout({
-    lineItems: [
-      {
-        price: 'price_1QZttOB0HvM76eskACyPw35o', // Replace with your Stripe price ID
-        quantity: 1,
-      },
-    ],
-    mode: 'subscription',
-    successUrl: window.location.href + '&paid=true',
-    cancelUrl: window.location.href,
-  }).then((result) => {
-    if (result.error) {
-      alert(result.error.message);
+  const subscribeForm = document.getElementById("subscribe-form");
+  subscribeForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("subscription-email").value;
+    if (email) {
+      redirectToPayment(email);
     }
   });
 }
 
+// Redirect to Stripe payment page
+function redirectToPayment(email) {
+  fetch("/create-checkout-session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const stripe = Stripe("pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B");
+      return stripe.redirectToCheckout({ sessionId: data.sessionId });
+    })
+    .catch((error) => {
+      console.error("Error redirecting to payment:", error);
+    });
+}
+
 function showImageInModal(imageSrc) {
-  const modal = document.createElement('div');
-  modal.className = 'modal';
+  const modal = document.createElement("div");
+  modal.className = "modal";
   modal.innerHTML = `
     <div class="modal-content">
       <img src="${imageSrc}" class="modal-image" alt="Profile Image">
@@ -146,7 +150,7 @@ function showImageInModal(imageSrc) {
 }
 
 function closeModal() {
-  const modal = document.querySelector('.modal');
+  const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
 
