@@ -1,7 +1,7 @@
 // Import Firebase SDKs
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-firestore.js";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -54,17 +54,12 @@ loginForm.addEventListener("submit", async (e) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Retrieve subscription status from Firestore
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      localStorage.setItem("isMember", userData.subscriptionStatus === "active" ? "true" : "false");
+    // Store the logged-in user's email in localStorage
+    localStorage.setItem("loggedInUser", JSON.stringify({ uid: user.uid, email: user.email }));
 
-      document.getElementById("auth-message").textContent = `Login successful! Welcome back, ${user.email}`;
-    } else {
-      document.getElementById("auth-message").textContent = `User data not found. Please contact support.`;
-    }
+    document.getElementById("auth-message").textContent = `Login successful! Welcome back, ${user.email}`;
   } catch (error) {
     document.getElementById("auth-message").textContent = `Error: ${error.message}`;
   }
 });
+
