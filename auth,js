@@ -1,20 +1,64 @@
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+// Import Firebase SDKs if using ES modules (optional, for modular projects)
+// For CDN usage, make sure you include firebase-app.js and firebase-auth.js in your HTML
 
-// Initialize Firebase Auth
-const auth = getAuth();
+// Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDYpVTWymrrEbtJ1ji1RW1L-VNqQQ33wDM",
+  authDomain: "affairwhispers.firebaseapp.com",
+  projectId: "affairwhispers",
+  storageBucket: "affairwhispers.firebasestorage.app",
+  messagingSenderId: "786032191098",
+  appId: "1:786032191098:web:f61cc44ad67d5fbde8bdc3",
+  measurementId: "G-7VRSFQCQ9Y",
+};
 
-async function checkLoggedInUser() {
+// Initialize Firebase
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+
+// Function to check if a user is logged in
+function checkLoggedInUser() {
   return new Promise((resolve) => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is logged in, return user object
-        resolve(user);
-      } else {
-        // No user logged in
-        resolve(null);
-      }
-    });
+    const user = firebase.auth().currentUser;
+    resolve(user);
   });
 }
 
-export { checkLoggedInUser };
+// Function to listen for auth state changes (optional)
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    console.log("User is logged in:", user);
+    // Optionally store user info in localStorage for global access
+    localStorage.setItem("loggedInUser", JSON.stringify(user));
+  } else {
+    console.log("No user is logged in.");
+    // Clear localStorage if the user logs out
+    localStorage.removeItem("loggedInUser");
+  }
+});
+
+// Function to log in a user
+function logInUser(email, password) {
+  return firebase
+    .auth()
+    .signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      console.log("User signed in:", userCredential.user);
+      return userCredential.user;
+    })
+    .catch((error) => {
+      console.error("Error logging in:", error);
+      throw error;
+    });
+}
+
+// Function to log out the user
+function logOutUser() {
+  return firebase.auth().signOut().then(() => {
+    console.log("User logged out.");
+  });
+}
+
+// Export functions for other scripts
+export { checkLoggedInUser, logInUser, logOutUser };
