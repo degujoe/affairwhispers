@@ -59,47 +59,23 @@ document.addEventListener('DOMContentLoaded', function () {
             reviewsSection.appendChild(reviewDiv);
           });
 
-// Handle Contact Now functionality
-const contactButton = document.getElementById('contact-now-button');
-contactButton.addEventListener('click', async () => {
-  const currentUser = await checkLoggedInUser();
-
-  if (!currentUser) {
-    // If the user is not logged in, show a login/signup popup
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h2>Login or Sign Up</h2>
-        <p>You must log in or sign up to access this feature.</p>
-        <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
-        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    return;
-  }
-
-  // Check if the user is a member
-  const isMember = await checkMembership();
-
-  if (!isMember) {
-    // Show subscription advertisement popup
-    showSubscriptionPopup();
-  } else {
-    // Reveal phone number and rates for members
-    document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
-    contactDetails.classList.remove('hidden');
+          // Handle Contact Now functionality
+          const contactButton = document.getElementById('contact-now-button');
+          contactButton.addEventListener('click', async () => {
+            const isMember = await checkMembership();
+            if (isMember) {
+              // Reveal phone number and rates
+              document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
+              contactDetails.classList.remove('hidden');
+            } else {
+              showSubscriptionPopup();
+            }
+          });
+        }
+      })
+      .catch(error => console.error("Error loading profile:", error));
   }
 });
-
-// Check if the user is logged in
-async function checkLoggedInUser() {
-  return new Promise((resolve) => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace with Firebase Auth if needed
-    resolve(user);
-  });
-}
 
 // Simulate membership check
 async function checkMembership() {
@@ -109,35 +85,70 @@ async function checkMembership() {
   });
 }
 
-// Show subscription popup
 async function showSubscriptionPopup() {
+  // Check if the user is logged in
+  const currentUser = await checkLoggedInUser();
+
   const modal = document.createElement('div');
   modal.className = 'modal';
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h2>Subscribe to AffairWhispers</h2>
-      <p>Unlock exclusive features:</p>
-      <ul class="subscription-benefits">
-        <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
-        <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-        <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
-        <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-      </ul>
-      <button id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
-      <button onclick="closeModal()" class="btn-secondary">Cancel</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
 
-  document.getElementById("proceed-to-payment").addEventListener("click", () => {
-    const currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
-    redirectToPayment(currentUser.email);
+  if (currentUser) {
+    // If the user is logged in, show a message and proceed to payment
+    modal.innerHTML = `
+      <div class="modal-content">
+        <h2>Subscribe to AffairWhispers</h2>
+        <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
+        <p>Unlock exclusive features:</p>
+        <ul class="subscription-benefits">
+          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
+          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
+          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+        </ul>
+        <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
+        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Handle payment redirection
+    document.getElementById("proceed-to-payment").addEventListener("click", () => {
+      redirectToPayment(currentUser.email);
+    });
+  } else {
+    // If the user is not logged in, prompt them to log in or create an account
+    modal.innerHTML = `
+      <div class="modal-content">
+        <h2>Subscribe to AffairWhispers</h2>
+        <p>Unlock exclusive features:</p>
+        <ul class="subscription-benefits">
+          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
+          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
+          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+        </ul>
+        <p>Please log in or create an account to proceed:</p>
+        <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
+        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+  }
+}
+
+// Check if the user is logged in
+async function checkLoggedInUser() {
+  return new Promise((resolve) => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
+    resolve(user);
   });
 }
 
 // Redirect to login page
 function redirectToLogin() {
-  window.location.href = "login.html";
+  window.location.href = "login.html"; // Adjust this to your login page URL
 }
 
 // Redirect to Stripe payment page
@@ -162,7 +173,6 @@ function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
-
 
 
 function showImageInModal(imageSrc) {
