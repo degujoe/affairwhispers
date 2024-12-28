@@ -77,9 +77,8 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-async function handleContactNow(profile) {
+async function handleContactNow() {
   const currentUser = JSON.parse(localStorage.getItem("loggedInUser")); // Check if user is logged in
-  const isMember = localStorage.getItem("isMember") === "true"; // Check if user is a member
 
   const modal = document.createElement("div");
   modal.className = "modal";
@@ -94,8 +93,8 @@ async function handleContactNow(profile) {
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
       </div>
     `;
-  } else if (!isMember) {
-    // User is logged in but not a member
+  } else {
+    // User is logged in
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
@@ -107,34 +106,7 @@ async function handleContactNow(profile) {
           <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
           <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
         </ul>
-        <button id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
-        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    // Handle payment redirection
-    document.getElementById("proceed-to-payment").addEventListener("click", () => {
-      redirectToPayment(currentUser.email);
-    });
-
-    return; // End here if the user is not a member
-  } else {
-    // User is logged in and a member
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h2>Contact Details</h2>
-        <p><strong>Phone Number:</strong> ${profile.phone_number || "N/A"}</p>
-        <h3>Rates</h3>
-        <h4>In Calls</h4>
-        <ul>
-          ${Object.entries(profile.rates.in_calls).map(([time, rate]) => `<li>${time}: ${rate}</li>`).join("")}
-        </ul>
-        <h4>Out Calls</h4>
-        <ul>
-          ${Object.entries(profile.rates.out_calls).map(([time, rate]) => `<li>${time}: ${rate}</li>`).join("")}
-        </ul>
-        <button onclick="closeModal()" class="btn-secondary">Close</button>
+        <button onclick="closeModal()" class="btn-primary">OK</button>
       </div>
     `;
   }
@@ -147,28 +119,12 @@ function redirectToLogin() {
   window.location.href = "login.html"; // Adjust this to your login page URL
 }
 
-// Redirect to Stripe payment page
-function redirectToPayment(email) {
-  fetch("/create-checkout-session", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const stripe = Stripe("pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B");
-      return stripe.redirectToCheckout({ sessionId: data.sessionId });
-    })
-    .catch((error) => {
-      console.error("Error redirecting to payment:", error);
-    });
-}
-
 // Close modal
 function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
+
 
 
 
