@@ -151,16 +151,6 @@ function redirectToLogin() {
   window.location.href = "login.html"; // Adjust this to your login page URL
 }
 
-function redirectToPayment() {
-  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-
-  if (!loggedInUser || !loggedInUser.email) {
-    alert('You must be logged in to proceed with payment.');
-    return;
-  }
-
-  const email = loggedInUser.email;
-
 function redirectToPayment(email) {
   // Construct the Stripe Payment Link with the user's email as a query parameter
   const paymentLink = `https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ?client_reference_id=${encodeURIComponent(email)}`;
@@ -169,7 +159,6 @@ function redirectToPayment(email) {
   window.location.href = paymentLink;
 }
 
-}
 
 
 // Close modal
