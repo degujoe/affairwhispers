@@ -59,24 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
             reviewsSection.appendChild(reviewDiv);
           });
 
-          // Handle Contact Now functionality
-          const contactButton = document.getElementById('contact-now-button');
-          contactButton.addEventListener('click', async () => {
-            const isMember = await checkMembership();
-            if (isMember) {
-              // Reveal phone number and rates
-              document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
-              contactDetails.classList.remove('hidden');
-            } else {
-              showSubscriptionPopup();
-            }
-          });
-        }
-      })
-      .catch(error => console.error("Error loading profile:", error));
-  }
-});
-
 async function handleContactNow() {
   const currentUser = JSON.parse(localStorage.getItem("loggedInUser")); // Check if user is logged in
 
@@ -124,6 +106,7 @@ function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
+
 
 
 
