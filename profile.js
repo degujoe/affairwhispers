@@ -59,24 +59,41 @@ document.addEventListener('DOMContentLoaded', function () {
             reviewsSection.appendChild(reviewDiv);
           });
 
-async function handleContactNow() {
-  const currentUser = JSON.parse(localStorage.getItem("loggedInUser")); // Check if user is logged in
+          // Handle Contact Now functionality
+          const contactButton = document.getElementById('contact-now-button');
+          contactButton.addEventListener('click', async () => {
+            const isMember = await checkMembership();
+            if (isMember) {
+              // Reveal phone number and rates
+              document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
+              contactDetails.classList.remove('hidden');
+            } else {
+              showSubscriptionPopup();
+            }
+          });
+        }
+      })
+      .catch(error => console.error("Error loading profile:", error));
+  }
+});
 
-  const modal = document.createElement("div");
-  modal.className = "modal";
+// Simulate membership check
+async function checkMembership() {
+  return new Promise((resolve) => {
+    const isMember = localStorage.getItem('isMember') === 'true';
+    resolve(isMember);
+  });
+}
 
-  if (!currentUser) {
-    // User is not logged in
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h2>Log In or Sign Up</h2>
-        <p>You must log in or create an account to contact this profile.</p>
-        <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
-        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
-      </div>
-    `;
-  } else {
-    // User is logged in
+async function showSubscriptionPopup() {
+  // Check if the user is logged in
+  const currentUser = await checkLoggedInUser();
+
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+
+  if (currentUser) {
+    // If the user is logged in, show a message and proceed to payment
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
@@ -88,12 +105,45 @@ async function handleContactNow() {
           <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
           <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
         </ul>
-        <button onclick="closeModal()" class="btn-primary">OK</button>
+        <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
+        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
       </div>
     `;
-  }
 
-  document.body.appendChild(modal);
+    document.body.appendChild(modal);
+
+    // Handle payment redirection
+    document.getElementById("proceed-to-payment").addEventListener("click", () => {
+      redirectToPayment(currentUser.email);
+    });
+  } else {
+    // If the user is not logged in, prompt them to log in or create an account
+    modal.innerHTML = `
+      <div class="modal-content">
+        <h2>Subscribe to AffairWhispers</h2>
+        <p>Unlock exclusive features:</p>
+        <ul class="subscription-benefits">
+          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
+          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
+          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+        </ul>
+        <p>Please log in or create an account to proceed:</p>
+        <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
+        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+  }
+}
+
+// Check if the user is logged in
+async function checkLoggedInUser() {
+  return new Promise((resolve) => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
+    resolve(user);
+  });
 }
 
 // Redirect to login page
@@ -101,14 +151,28 @@ function redirectToLogin() {
   window.location.href = "login.html"; // Adjust this to your login page URL
 }
 
+// Redirect to Stripe payment page
+function redirectToPayment(email) {
+  fetch("/create-checkout-session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const stripe = Stripe("pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B");
+      return stripe.redirectToCheckout({ sessionId: data.sessionId });
+    })
+    .catch((error) => {
+      console.error("Error redirecting to payment:", error);
+    });
+}
+
 // Close modal
 function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
-
-
-
 
 
 function showImageInModal(imageSrc) {
