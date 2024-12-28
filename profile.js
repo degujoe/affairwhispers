@@ -151,22 +151,36 @@ function redirectToLogin() {
   window.location.href = "login.html"; // Adjust this to your login page URL
 }
 
-// Redirect to Stripe payment page
-function redirectToPayment(email) {
-  fetch("/create-checkout-session", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+function redirectToPayment() {
+  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+  if (!loggedInUser || !loggedInUser.email) {
+    alert('You must be logged in to proceed with payment.');
+    return;
+  }
+
+  const email = loggedInUser.email;
+
+  fetch('/create-checkout-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
   })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Failed to create checkout session');
+      }
+      return response.json();
+    })
     .then((data) => {
-      const stripe = Stripe("pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B");
+      const stripe = Stripe('pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B');
       return stripe.redirectToCheckout({ sessionId: data.sessionId });
     })
     .catch((error) => {
-      console.error("Error redirecting to payment:", error);
+      console.error('Error redirecting to payment:', error);
     });
 }
+
 
 // Close modal
 function closeModal() {
