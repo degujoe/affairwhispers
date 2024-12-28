@@ -85,34 +85,70 @@ async function checkMembership() {
   });
 }
 
-// Show Subscription Popup
-function showSubscriptionPopup() {
+async function showSubscriptionPopup() {
+  // Check if the user is logged in
+  const currentUser = await checkLoggedInUser();
+
   const modal = document.createElement('div');
   modal.className = 'modal';
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h2>Subscribe to AffairWhispers</h2>
-      <p>Unlock exclusive features:</p>
-      <ul class="subscription-benefits">
-        <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
-        <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-        <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
-        <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-      </ul>
-      <button type="submit" id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
-      <button onclick="closeModal()" class="btn-secondary">Cancel</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
 
-  const subscribeForm = document.getElementById("subscribe-form");
-  subscribeForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const email = document.getElementById("subscription-email").value;
-    if (email) {
-      redirectToPayment(email);
-    }
+  if (currentUser) {
+    // If the user is logged in, show a message and proceed to payment
+    modal.innerHTML = `
+      <div class="modal-content">
+        <h2>Subscribe to AffairWhispers</h2>
+        <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
+        <p>Unlock exclusive features:</p>
+        <ul class="subscription-benefits">
+          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
+          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
+          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+        </ul>
+        <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
+        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Handle payment redirection
+    document.getElementById("proceed-to-payment").addEventListener("click", () => {
+      redirectToPayment(currentUser.email);
+    });
+  } else {
+    // If the user is not logged in, prompt them to log in or create an account
+    modal.innerHTML = `
+      <div class="modal-content">
+        <h2>Subscribe to AffairWhispers</h2>
+        <p>Unlock exclusive features:</p>
+        <ul class="subscription-benefits">
+          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
+          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
+          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+        </ul>
+        <p>Please log in or create an account to proceed:</p>
+        <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
+        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+  }
+}
+
+// Check if the user is logged in
+async function checkLoggedInUser() {
+  return new Promise((resolve) => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
+    resolve(user);
   });
+}
+
+// Redirect to login page
+function redirectToLogin() {
+  window.location.href = "login.html"; // Adjust this to your login page URL
 }
 
 // Redirect to Stripe payment page
@@ -131,6 +167,13 @@ function redirectToPayment(email) {
       console.error("Error redirecting to payment:", error);
     });
 }
+
+// Close modal
+function closeModal() {
+  const modal = document.querySelector(".modal");
+  if (modal) modal.remove();
+}
+
 
 function showImageInModal(imageSrc) {
   const modal = document.createElement("div");
