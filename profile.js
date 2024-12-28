@@ -77,23 +77,44 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-// Simulate membership check
+// Import Firebase Auth
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+// Initialize Firebase Auth
+const auth = getAuth();
+
+// Check if the user is logged in
+async function checkLoggedInUser() {
+  return new Promise((resolve) => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is logged in, return user object
+        resolve(user);
+      } else {
+        // No user logged in
+        resolve(null);
+      }
+    });
+  });
+}
+
+// Check membership status (from localStorage or server)
 async function checkMembership() {
   return new Promise((resolve) => {
-    const isMember = localStorage.getItem('isMember') === 'true';
+    const isMember = localStorage.getItem("isMember") === "true";
     resolve(isMember);
   });
 }
 
+// Show Subscription Popup
 async function showSubscriptionPopup() {
-  // Check if the user is logged in
-  const currentUser = await checkLoggedInUser();
+  const currentUser = await checkLoggedInUser(); // Check login status
 
-  const modal = document.createElement('div');
-  modal.className = 'modal';
+  const modal = document.createElement("div");
+  modal.className = "modal";
 
   if (currentUser) {
-    // If the user is logged in, show a message and proceed to payment
+    // User is logged in, show subscription details
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
@@ -114,10 +135,10 @@ async function showSubscriptionPopup() {
 
     // Handle payment redirection
     document.getElementById("proceed-to-payment").addEventListener("click", () => {
-      redirectToPayment(currentUser.email);
+      redirectToPayment(currentUser.email); // Pass the logged-in user's email to Stripe
     });
   } else {
-    // If the user is not logged in, prompt them to log in or create an account
+    // User not logged in, prompt them to log in or sign up
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
@@ -138,14 +159,6 @@ async function showSubscriptionPopup() {
   }
 }
 
-// Check if the user is logged in
-async function checkLoggedInUser() {
-  return new Promise((resolve) => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
-    resolve(user);
-  });
-}
-
 // Redirect to login page
 function redirectToLogin() {
   window.location.href = "login.html"; // Adjust this to your login page URL
@@ -156,7 +169,7 @@ function redirectToPayment(email) {
   fetch("/create-checkout-session", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email }), // Send email to backend
   })
     .then((response) => response.json())
     .then((data) => {
@@ -168,11 +181,12 @@ function redirectToPayment(email) {
     });
 }
 
-// Close modal
+// Close modal function
 function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
+
 
 
 function showImageInModal(imageSrc) {
