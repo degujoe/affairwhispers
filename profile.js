@@ -77,45 +77,23 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-// Import Firebase Auth
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
-
-// Initialize Firebase Auth
-const auth = getAuth();
-
-// Check if the user is logged in
-async function checkLoggedInUser() {
-  return new Promise((resolve) => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is logged in, return user object
-        resolve(user);
-      } else {
-        // No user logged in
-        resolve(null);
-      }
-    });
-  });
-}
-
-// Check membership status (from localStorage or server)
 async function checkMembership() {
   return new Promise((resolve) => {
-    const isMember = localStorage.getItem("isMember") === "true";
+    const isMember = localStorage.getItem('isMember') === 'true';
     resolve(isMember);
   });
 }
 
-// Show Subscription Popup
 async function showSubscriptionPopup() {
-  const currentUser = await checkLoggedInUser(); // Check login status
+  // Check if the user is logged in
+  const currentUser = await checkLoggedInUser();
 
-  const modal = document.createElement("div");
-  modal.className = "modal";
+  const modal = document.createElement('div');
+  modal.className = 'modal';
 
   if (currentUser) {
-    // User is logged in, show subscription details
-    modal.innerHTML = `
+    // If the user is logged in, show a message and proceed to payment
+    modal.innerHTML = 
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
         <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
@@ -129,17 +107,17 @@ async function showSubscriptionPopup() {
         <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
       </div>
-    `;
+    ;
 
     document.body.appendChild(modal);
 
     // Handle payment redirection
     document.getElementById("proceed-to-payment").addEventListener("click", () => {
-      redirectToPayment(currentUser.email); // Pass the logged-in user's email to Stripe
+      redirectToPayment(currentUser.email);
     });
   } else {
-    // User not logged in, prompt them to log in or sign up
-    modal.innerHTML = `
+    // If the user is not logged in, prompt them to log in or create an account
+    modal.innerHTML = 
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
         <p>Unlock exclusive features:</p>
@@ -153,10 +131,18 @@ async function showSubscriptionPopup() {
         <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
       </div>
-    `;
+    ;
 
     document.body.appendChild(modal);
   }
+}
+
+// Check if the user is logged in
+async function checkLoggedInUser() {
+  return new Promise((resolve) => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
+    resolve(user);
+  });
 }
 
 // Redirect to login page
@@ -169,7 +155,7 @@ function redirectToPayment(email) {
   fetch("/create-checkout-session", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email }), // Send email to backend
+    body: JSON.stringify({ email }),
   })
     .then((response) => response.json())
     .then((data) => {
@@ -179,12 +165,6 @@ function redirectToPayment(email) {
     .catch((error) => {
       console.error("Error redirecting to payment:", error);
     });
-}
-
-// Close modal function
-function closeModal() {
-  const modal = document.querySelector(".modal");
-  if (modal) modal.remove();
 }
 
 
