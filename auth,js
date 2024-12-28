@@ -1,6 +1,3 @@
-// Import Firebase SDKs if using ES modules (optional, for modular projects)
-// For CDN usage, make sure you include firebase-app.js and firebase-auth.js in your HTML
-
 // Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyDYpVTWymrrEbtJ1ji1RW1L-VNqQQ33wDM",
@@ -25,16 +22,14 @@ function checkLoggedInUser() {
   });
 }
 
-// Function to listen for auth state changes (optional)
+// Listen for auth state changes
 firebase.auth().onAuthStateChanged((user) => {
   if (user) {
     console.log("User is logged in:", user);
-    // Optionally store user info in localStorage for global access
-    localStorage.setItem("loggedInUser", JSON.stringify(user));
+    localStorage.setItem("loggedInUser", JSON.stringify(user)); // Save user info
   } else {
     console.log("No user is logged in.");
-    // Clear localStorage if the user logs out
-    localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("loggedInUser"); // Clear user info
   }
 });
 
@@ -60,5 +55,3 @@ function logOutUser() {
   });
 }
 
-// Export functions for other scripts
-export { checkLoggedInUser, logInUser, logOutUser };
