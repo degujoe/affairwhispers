@@ -3,6 +3,23 @@ document.addEventListener('DOMContentLoaded', function () {
   const profilesPerPage = 10; // Number of profiles to display per page
   let currentPage = 1; // Current page number
 
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.1.0/firebase-auth.js";
+
+const auth = getAuth();
+let currentUser = null;
+
+// Monitor auth state
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUser = user; // User is signed in
+    console.log(`Logged in as: ${user.email}`);
+  } else {
+    currentUser = null; // User is signed out
+    console.log("No user is logged in");
+  }
+});
+
+
   // Fetch profiles data
   function fetchProfiles() {
     fetch('profiles.json')
