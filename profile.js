@@ -77,23 +77,25 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-// Simulate membership check
-async function checkMembership() {
-  return new Promise((resolve) => {
-    const isMember = localStorage.getItem('isMember') === 'true';
-    resolve(isMember);
-  });
-}
+async function handleContactNow(profile) {
+  const currentUser = JSON.parse(localStorage.getItem("loggedInUser")); // Check if user is logged in
+  const isMember = localStorage.getItem("isMember") === "true"; // Check if user is a member
 
-async function showSubscriptionPopup() {
-  // Check if the user is logged in
-  const currentUser = await checkLoggedInUser();
+  const modal = document.createElement("div");
+  modal.className = "modal";
 
-  const modal = document.createElement('div');
-  modal.className = 'modal';
-
-  if (currentUser) {
-    // If the user is logged in, show a message and proceed to payment
+  if (!currentUser) {
+    // User is not logged in
+    modal.innerHTML = `
+      <div class="modal-content">
+        <h2>Log In or Sign Up</h2>
+        <p>You must log in or create an account to contact this profile.</p>
+        <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
+        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+      </div>
+    `;
+  } else if (!isMember) {
+    // User is logged in but not a member
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
@@ -105,45 +107,39 @@ async function showSubscriptionPopup() {
           <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
           <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
         </ul>
-        <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
+        <button id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
       </div>
     `;
-
     document.body.appendChild(modal);
 
     // Handle payment redirection
     document.getElementById("proceed-to-payment").addEventListener("click", () => {
       redirectToPayment(currentUser.email);
     });
+
+    return; // End here if the user is not a member
   } else {
-    // If the user is not logged in, prompt them to log in or create an account
+    // User is logged in and a member
     modal.innerHTML = `
       <div class="modal-content">
-        <h2>Subscribe to AffairWhispers</h2>
-        <p>Unlock exclusive features:</p>
-        <ul class="subscription-benefits">
-          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
-          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
-          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+        <h2>Contact Details</h2>
+        <p><strong>Phone Number:</strong> ${profile.phone_number || "N/A"}</p>
+        <h3>Rates</h3>
+        <h4>In Calls</h4>
+        <ul>
+          ${Object.entries(profile.rates.in_calls).map(([time, rate]) => `<li>${time}: ${rate}</li>`).join("")}
         </ul>
-        <p>Please log in or create an account to proceed:</p>
-        <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
-        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+        <h4>Out Calls</h4>
+        <ul>
+          ${Object.entries(profile.rates.out_calls).map(([time, rate]) => `<li>${time}: ${rate}</li>`).join("")}
+        </ul>
+        <button onclick="closeModal()" class="btn-secondary">Close</button>
       </div>
     `;
-
-    document.body.appendChild(modal);
   }
-}
 
-// Check if the user is logged in
-async function checkLoggedInUser() {
-  return new Promise((resolve) => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
-    resolve(user);
-  });
+  document.body.appendChild(modal);
 }
 
 // Redirect to login page
@@ -173,6 +169,7 @@ function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
+
 
 
 function showImageInModal(imageSrc) {
