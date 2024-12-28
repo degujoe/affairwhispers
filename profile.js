@@ -161,24 +161,14 @@ function redirectToPayment() {
 
   const email = loggedInUser.email;
 
-  fetch('/create-checkout-session', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error('Failed to create checkout session');
-      }
-      return response.json();
-    })
-    .then((data) => {
-      const stripe = Stripe('pk_test_51M2LCuB0HvM76esk0scIQVcbL2HhYxldNk4MFJIgwxaZuKf6DVqLh3GWvAuLWkmfBeWdUNACBMvMwPjkBCMMKdZI00kBAXwK9B');
-      return stripe.redirectToCheckout({ sessionId: data.sessionId });
-    })
-    .catch((error) => {
-      console.error('Error redirecting to payment:', error);
-    });
+function redirectToPayment(email) {
+  // Construct the Stripe Payment Link with the user's email as a query parameter
+  const paymentLink = `https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ?client_reference_id=${encodeURIComponent(email)}`;
+
+  // Redirect the user to the Stripe Payment Link
+  window.location.href = paymentLink;
+}
+
 }
 
 
