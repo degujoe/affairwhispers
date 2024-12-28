@@ -85,66 +85,24 @@ async function checkMembership(email) {
       body: JSON.stringify({ email }),
     });
     const data = await response.json();
-    return data.active; // Assuming the server returns { active: true/false }
+    return data.isActive; // Assuming the server returns { isActive: true/false }
   } catch (error) {
     console.error('Error checking membership:', error);
     return false;
   }
 }
 
-async function handleContactNow(profile) {
-  const currentUser = await checkLoggedInUser();
 
-  if (!currentUser) {
-    // Show login/signup prompt
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h2>Login or Sign Up</h2>
-        <p>You must log in or sign up to access contact details.</p>
-        <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
-        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-    return;
-  }
-
-  // Check if the user has an active membership
-  const isMember = await checkMembership(currentUser.email);
-
-  if (isMember) {
-    // If the user is a member, show the phone number and rates
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h2>Contact Details</h2>
-        <p><strong>Phone Number:</strong> ${profile.phone_number || 'N/A'}</p>
-        <h3>Rates</h3>
-        <p><strong>Currency:</strong> ${profile.currency || 'N/A'}</p>
-        <h4>In Calls</h4>
-        <ul>${profile.in_call_rates.map(rate => `<li>${rate}</li>`).join('')}</ul>
-        <h4>Out Calls</h4>
-        <ul>${profile.out_call_rates.map(rate => `<li>${rate}</li>`).join('')}</ul>
-        <button onclick="closeModal()" class="btn-secondary">Close</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-  } else {
-    // If the user is not a member, show the subscription prompt
-    showSubscriptionPopup();
-  }
-}
 
 async function showSubscriptionPopup() {
+  // Check if the user is logged in
   const currentUser = await checkLoggedInUser();
 
   const modal = document.createElement('div');
   modal.className = 'modal';
 
   if (currentUser) {
+    // If the user is logged in, show a message and proceed to payment
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
@@ -163,10 +121,12 @@ async function showSubscriptionPopup() {
 
     document.body.appendChild(modal);
 
-    document.getElementById('proceed-to-payment').addEventListener('click', () => {
+    // Handle payment redirection
+    document.getElementById("proceed-to-payment").addEventListener("click", () => {
       redirectToPayment(currentUser.email);
     });
   } else {
+    // If the user is not logged in, prompt them to log in or create an account
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
@@ -187,33 +147,34 @@ async function showSubscriptionPopup() {
   }
 }
 
-// Redirect to login page
-function redirectToLogin() {
-  window.location.href = 'login.html';
+// Check if the user is logged in
+async function checkLoggedInUser() {
+  return new Promise((resolve) => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
+    resolve(user);
+  });
 }
 
-// Redirect to payment link
+// Redirect to login page
+function redirectToLogin() {
+  window.location.href = "login.html"; // Adjust this to your login page URL
+}
+
 function redirectToPayment(email) {
+  // Construct the Stripe Payment Link with the user's email as a query parameter
   const paymentLink = `https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ?client_reference_id=${encodeURIComponent(email)}`;
+
+  // Redirect the user to the Stripe Payment Link
   window.location.href = paymentLink;
 }
 
+
+
 // Close modal
 function closeModal() {
-  const modal = document.querySelector('.modal');
+  const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
-
-// Hook the Contact Now button
-document.getElementById('contact-now-button').addEventListener('click', async () => {
-  const profile = {
-    phone_number: '123-456-7890',
-    currency: 'USD',
-    in_call_rates: ['$100/hour', '$500/day'],
-    out_call_rates: ['$150/hour', '$600/day'],
-  };
-  await handleContactNow(profile);
-});
 
 
 
