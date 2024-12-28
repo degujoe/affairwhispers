@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
+// Simulate membership check
 async function checkMembership() {
   return new Promise((resolve) => {
     const isMember = localStorage.getItem('isMember') === 'true';
@@ -93,7 +94,7 @@ async function showSubscriptionPopup() {
 
   if (currentUser) {
     // If the user is logged in, show a message and proceed to payment
-    modal.innerHTML = 
+    modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
         <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
@@ -107,7 +108,7 @@ async function showSubscriptionPopup() {
         <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
       </div>
-    ;
+    `;
 
     document.body.appendChild(modal);
 
@@ -117,7 +118,7 @@ async function showSubscriptionPopup() {
     });
   } else {
     // If the user is not logged in, prompt them to log in or create an account
-    modal.innerHTML = 
+    modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
         <p>Unlock exclusive features:</p>
@@ -131,7 +132,7 @@ async function showSubscriptionPopup() {
         <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
       </div>
-    ;
+    `;
 
     document.body.appendChild(modal);
   }
@@ -167,6 +168,11 @@ function redirectToPayment(email) {
     });
 }
 
+// Close modal
+function closeModal() {
+  const modal = document.querySelector(".modal");
+  if (modal) modal.remove();
+}
 
 
 function showImageInModal(imageSrc) {
