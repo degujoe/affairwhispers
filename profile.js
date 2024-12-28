@@ -99,12 +99,6 @@ function showSubscriptionPopup() {
         <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
         <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
       </ul>
-      <form id="subscribe-form">
-        <label for="subscription-email">Enter your email to subscribe:</label>
-        <input type="email" id="subscription-email" placeholder="Email" required>
-        <button type="submit" id="proceed-to-payment" class="btn-primary">Subscribe Now</button>
-      </form>
-      <p>Already a member? <a href="login.html">Log In</a></p>
       <button onclick="closeModal()" class="btn-secondary">Cancel</button>
     </div>
   `;
