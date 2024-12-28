@@ -77,34 +77,21 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 });
 
-async function checkMembership() {
-  const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
-
-  if (!loggedInUser || !loggedInUser.email) {
-    return false; // User is not logged in
-  }
-
+async function checkMembership(email) {
   try {
     const response = await fetch('http://localhost:3000/check-subscription', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: loggedInUser.email }),
+      body: JSON.stringify({ email }),
     });
-
     const data = await response.json();
-
-    if (data.isMember) {
-      console.log(`User is a paying member. Subscription ID: ${data.subscriptionId}`);
-      return true;
-    } else {
-      console.log('User is not a paying member.');
-      return false;
-    }
+    return data.isActive; // Assuming the server returns { isActive: true/false }
   } catch (error) {
-    console.error('Error checking subscription:', error);
+    console.error('Error checking membership:', error);
     return false;
   }
 }
+
 
 
 async function showSubscriptionPopup() {
