@@ -84,13 +84,16 @@ async function checkMembership(email) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     });
+
     const data = await response.json();
-    return data.isActive; // Assuming the server returns { isActive: true/false }
+    console.log('Response from membership check:', data); // Debug server response
+    return data.active; // Use 'active' if the response has 'active' instead of 'isActive'
   } catch (error) {
     console.error('Error checking membership:', error);
     return false;
   }
 }
+
 
 
 
