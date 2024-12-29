@@ -64,10 +64,27 @@ document.addEventListener('DOMContentLoaded', function () {
           contactButton.addEventListener('click', async () => {
             const isMember = await checkMembership();
             if (isMember) {
-              // Reveal phone number and rates
-              document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
-              contactDetails.classList.remove('hidden');
-            } else {
+                // Show a simple popup that says "Hello"
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>Hello!</h2>
+      <p>You are an active member!</p>
+      <button onclick="closeModal()" class="btn-primary">Close</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Close modal function
+  function closeModal() {
+    const modal = document.querySelector('.modal');
+    if (modal) modal.remove();
+  }
+
+  return; // Exit the function to skip the subscription popup
+} else {
               showSubscriptionPopup();
             }
           });
