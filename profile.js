@@ -102,17 +102,6 @@ async function showSubscriptionPopup() {
   modal.className = 'modal';
 
   if (currentUser) {
-
-    // Check membership status
-    const isMember = await checkMembership(currentUser.email);
-
-    if (isMember) {
-      // If the user is a member, reveal the phone number and rates immediately
-      document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
-      contactDetails.classList.remove('hidden');
-      return; // Exit the function as no popup is needed
-    }
-
     
     // If the user is logged in, show a message and proceed to payment
     modal.innerHTML = `
