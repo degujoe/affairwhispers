@@ -101,14 +101,6 @@ async function showSubscriptionPopup() {
   const modal = document.createElement('div');
   modal.className = 'modal';
 
-
-  if (isMember) {
-              // Reveal phone number and rates
-              document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
-              contactDetails.classList.remove('hidden');
-            } else {
-  
-
   if (currentUser) {
     // If the user is logged in, show a message and proceed to payment
     modal.innerHTML = `
