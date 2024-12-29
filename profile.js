@@ -97,20 +97,20 @@ async function checkMembership(email) {
 async function showSubscriptionPopup() {
   // Check if the user is logged in
   const currentUser = await checkLoggedInUser();
-
+  
   if (currentUser) {
-    // Check if the logged-in user is a member
+    // Check if the user is an active member
     const isMember = await checkMembership(currentUser.email);
 
     if (isMember) {
-      // User is a member, show the profile phone number and rates instead of the subscription popup
-      document.getElementById('profile-phone-number').textContent = '123-456-7890'; // Test phone number
-      const contactDetails = document.getElementById('contact-details'); // Make sure this element exists
-      contactDetails.classList.remove('hidden'); // Display the contact details
-      return; // Exit the function early, skipping the subscription popup
+      // If the user is an active member, show phone number and rates instead of subscription popup
+      document.getElementById('profile-phone-number').textContent = '123-456-7890'; // Example phone number
+      const contactDetails = document.getElementById('contact-details');
+      contactDetails.classList.remove('hidden'); // Show contact details
+      return; // Exit the function as no subscription popup is needed
     }
 
-    // User is logged in but not a member, show subscription popup
+    // If not a member, show the subscription popup
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
@@ -128,7 +128,6 @@ async function showSubscriptionPopup() {
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
       </div>
     `;
-
     document.body.appendChild(modal);
 
     // Handle payment redirection
@@ -154,10 +153,10 @@ async function showSubscriptionPopup() {
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
       </div>
     `;
-
     document.body.appendChild(modal);
   }
 }
+
 
 // Check if the user is logged in
 async function checkLoggedInUser() {
