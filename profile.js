@@ -60,37 +60,39 @@ document.addEventListener('DOMContentLoaded', function () {
           });
 
 // Handle Contact Now functionality
-const contactButton = document.getElementById('contact-now-button');
-contactButton.addEventListener('click', async () => {
-  const isMember = await checkMembership();
-  if (isMember) {
-    // User has an active membership, show the profile's rates and phone number
-    showProfileDetailsPopup();
-  } else {
-    // If the user doesn't have an active membership, show the subscription popup
-    showSubscriptionPopup();
+          const contactButton = document.getElementById('contact-now-button');
+          contactButton.addEventListener('click', async () => {
+            const isMember = await checkMembership();
+            if (isMember) {
+              // Reveal phone number and rates
+              document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
+              contactDetails.classList.remove('hidden');
+            } else {
+              showSubscriptionPopup();
+            }
+          });
+        }
+      })
+      .catch(error => console.error("Error loading profile:", error));
   }
 });
 
-async function showProfileDetailsPopup() {
-  const modal = document.createElement('div');
-  modal.className = 'modal';
-
-  // Test rates and phone number for now
-  const profileRates = '$49.99/month'; // Example rate
-  const profilePhoneNumber = '123-456-7890'; // Example phone number
-
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h2>Profile Information</h2>
-      <p><strong>Phone Number:</strong> ${profilePhoneNumber}</p>
-      <p><strong>Rates:</strong> ${profileRates}</p>
-      <button onclick="closeModal()" class="btn-secondary">Close</button>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
+async function checkMembership(email) {
+  try {
+    const response = await fetch('http://localhost:3000/check-subscription', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    const data = await response.json();
+    return data.isActive; // Assuming the server returns { isActive: true/false }
+  } catch (error) {
+    console.error('Error checking membership:', error);
+    return false;
+  }
 }
+
+
 
 async function showSubscriptionPopup() {
   // Check if the user is logged in
@@ -165,6 +167,8 @@ function redirectToPayment(email) {
   // Redirect the user to the Stripe Payment Link
   window.location.href = paymentLink;
 }
+
+
 
 // Close modal
 function closeModal() {
