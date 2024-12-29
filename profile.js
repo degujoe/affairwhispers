@@ -98,11 +98,21 @@ async function showSubscriptionPopup() {
   // Check if the user is logged in
   const currentUser = await checkLoggedInUser();
 
-  const modal = document.createElement('div');
-  modal.className = 'modal';
-
   if (currentUser) {
-    // If the user is logged in, show a message and proceed to payment
+    // Check if the logged-in user is a member
+    const isMember = await checkMembership(currentUser.email);
+
+    if (isMember) {
+      // User is a member, show the profile phone number and rates instead of the subscription popup
+      document.getElementById('profile-phone-number').textContent = '123-456-7890'; // Test phone number
+      const contactDetails = document.getElementById('contact-details'); // Make sure this element exists
+      contactDetails.classList.remove('hidden'); // Display the contact details
+      return; // Exit the function early, skipping the subscription popup
+    }
+
+    // User is logged in but not a member, show subscription popup
+    const modal = document.createElement('div');
+    modal.className = 'modal';
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
@@ -127,6 +137,8 @@ async function showSubscriptionPopup() {
     });
   } else {
     // If the user is not logged in, prompt them to log in or create an account
+    const modal = document.createElement('div');
+    modal.className = 'modal';
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
@@ -168,13 +180,12 @@ function redirectToPayment(email) {
   window.location.href = paymentLink;
 }
 
-
-
 // Close modal
 function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
+
 
 
 function showImageInModal(imageSrc) {
