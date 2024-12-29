@@ -60,27 +60,22 @@ document.addEventListener('DOMContentLoaded', function () {
           });
 
 // Handle Contact Now functionality
-const contactButton = document.getElementById('contact-now-button');
-contactButton.addEventListener('click', async () => {
-  const currentUser = await checkLoggedInUser();
-  if (!currentUser) {
-    // Show subscription popup if user is not logged in
-    showSubscriptionPopup();
-    return;
-  }
-
-  // Pass the user's email to checkMembership
-  const isMember = await checkMembership(currentUser.email);
-  if (isMember) {
-    // Reveal phone number and rates for members
-    document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
-    contactDetails.classList.remove('hidden');
-  } else {
-    // Show subscription popup for non-members
-    showSubscriptionPopup();
+          const contactButton = document.getElementById('contact-now-button');
+          contactButton.addEventListener('click', async () => {
+            const isMember = await checkMembership();
+            if (isMember) {
+              // Reveal phone number and rates
+              document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A';
+              contactDetails.classList.remove('hidden');
+            } else {
+              showSubscriptionPopup();
+            }
+          });
+        }
+      })
+      .catch(error => console.error("Error loading profile:", error));
   }
 });
-
 
 async function checkMembership(email) {
   try {
@@ -107,7 +102,6 @@ async function showSubscriptionPopup() {
   modal.className = 'modal';
 
   if (currentUser) {
-    
     // If the user is logged in, show a message and proceed to payment
     modal.innerHTML = `
       <div class="modal-content">
@@ -181,7 +175,6 @@ function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
-
 
 
 function showImageInModal(imageSrc) {
