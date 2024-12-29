@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function () {
           document.getElementById('profile-dress-size').textContent = profile.dress_size;
           document.getElementById('profile-chest-size').textContent = profile.chest_size;
           document.getElementById('profile-pubic-hair').textContent = profile.pubic_hair;
-          document.getElementById('profile-phone-number').textContent = profile.phone_number;
 
           // Set main profile image
           const mainImage = profile.images[0] || 'https://via.placeholder.com/150';
