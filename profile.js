@@ -125,7 +125,7 @@ async function showSubscriptionPopup() {
 
     if (isMember) {
         
-      document.getElementById('profile-phone-number').textContent = profile.phone_number || 'Phone number not available';
+      document.getElementById('profile-phone-number').textContent = 'profile.phone_number'; // Example phone number
       const contactDetails = document.getElementById('contact-details');
       contactDetails.classList.remove('hidden'); // Show contact details
       return; // Exit the function as no subscription popup is needed
