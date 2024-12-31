@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function checkMembership(email) {
   try {
-const response = await fetch('https://31a1-86-160-46-121.ngrok-free.app/check-subscription', {
+const response = await fetch('https://31a1-86-160-46-121.ngrok-free.app /check-subscription', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ email }),
@@ -118,8 +118,44 @@ const response = await fetch('https://31a1-86-160-46-121.ngrok-free.app/check-su
 async function showSubscriptionPopup() {
   // Check if the user is logged in
   const currentUser = await checkLoggedInUser();
+  
+  if (currentUser) {
+    // Check if the user is an active member
+    const isMember = await checkMembership(currentUser.email);
 
-  if (!currentUser) {
+    if (isMember) {
+      // If the user is an active member, show phone number and rates instead of subscription popup
+      document.getElementById('profile-phone-number').textContent = 'profile.phone_number'; // Example phone number
+      const contactDetails = document.getElementById('contact-details');
+      contactDetails.classList.remove('hidden'); // Show contact details
+      return; // Exit the function as no subscription popup is needed
+    }
+
+    // If not a member, show the subscription popup
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.innerHTML = `
+      <div class="modal-content">
+        <h2>Subscribe to AffairWhispers</h2>
+        <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
+        <p>Unlock exclusive features:</p>
+        <ul class="subscription-benefits">
+          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
+          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
+          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+        </ul>
+        <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
+        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    // Handle payment redirection
+    document.getElementById("proceed-to-payment").addEventListener("click", () => {
+      redirectToPayment(currentUser.email);
+    });
+  } else {
     // If the user is not logged in, prompt them to log in or create an account
     const modal = document.createElement('div');
     modal.className = 'modal';
@@ -139,81 +175,36 @@ async function showSubscriptionPopup() {
       </div>
     `;
     document.body.appendChild(modal);
-    return; // Exit function
   }
+}
 
-  // Define `data` and `profile` by fetching `profiles.json`
-  const urlParams = new URLSearchParams(window.location.search);
-  const userUrl = urlParams.get('user');
 
-  if (!userUrl) {
-    console.error('User URL is missing');
-    return;
-  }
-
-  let profile = null;
-  try {
-    const response = await fetch('profiles.json');
-    const data = await response.json();
-    profile = data.profiles.find(p => p.URL === userUrl);
-  } catch (error) {
-    console.error('Error fetching profiles:', error);
-    return;
-  }
-
-  if (!profile) {
-    console.error('Profile not found');
-    return;
-  }
-
-  // Check if the user is an active member
-  const isMember = await checkMembership(currentUser.email);
-
-  if (isMember) {
-    // Ensure the element exists before updating its textContent
-    const phoneNumberElement = document.getElementById('profile-phone_number');
-    if (phoneNumberElement) {
-      phoneNumberElement.textContent = profile.phone_number || 'Phone number not available';
-    } else {
-      console.error('Element with ID "profile-phone_number" not found in the DOM');
-    }
-
-    const contactDetails = document.getElementById('contact-details');
-    if (contactDetails) {
-      contactDetails.classList.remove('hidden'); // Show contact details
-    } else {
-      console.error('Element with ID "contact-details" not found in the DOM');
-    }
-
-    return; // Exit the function as no subscription popup is needed
-  }
-
-  // If not a member, show the subscription popup
-  const modal = document.createElement('div');
-  modal.className = 'modal';
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h2>Subscribe to AffairWhispers</h2>
-      <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
-      <p>Unlock exclusive features:</p>
-      <ul class="subscription-benefits">
-        <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
-        <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-        <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
-        <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-      </ul>
-      <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
-      <button onclick="closeModal()" class="btn-secondary">Cancel</button>
-    </div>
-  `;
-  document.body.appendChild(modal);
-
-  // Handle payment redirection
-  document.getElementById("proceed-to-payment").addEventListener("click", () => {
-    redirectToPayment(currentUser.email);
+// Check if the user is logged in
+async function checkLoggedInUser() {
+  return new Promise((resolve) => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
+    resolve(user);
   });
 }
 
+// Redirect to login page
+function redirectToLogin() {
+  window.location.href = "login.html"; // Adjust this to your login page URL
+}
+
+function redirectToPayment(email) {
+  // Construct the Stripe Payment Link with the user's email as a query parameter
+  const paymentLink = `https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ?client_reference_id=${encodeURIComponent(email)}`;
+
+  // Redirect the user to the Stripe Payment Link
+  window.location.href = paymentLink;
+}
+
+// Close modal
+function closeModal() {
+  const modal = document.querySelector(".modal");
+  if (modal) modal.remove();
+}
 
 
 
