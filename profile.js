@@ -59,90 +59,55 @@ document.addEventListener('DOMContentLoaded', function () {
             reviewsSection.appendChild(reviewDiv);
           });
 
-// Handle Contact Now functionality
+          // Handle Contact Now functionality
           const contactButton = document.getElementById('contact-now-button');
           contactButton.addEventListener('click', async () => {
             const isMember = await checkMembership();
             if (isMember) {
-                // Show a simple popup that says "Hello"
-  const modal = document.createElement('div');
-  modal.className = 'modal';
-  modal.innerHTML = `
-    <div class="modal-content">
-      <h2>Hello!</h2>
-      <p>You are an active member!</p>
-      <button onclick="closeModal()" class="btn-primary">Close</button>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-
-  // Close modal function
-  function closeModal() {
-    const modal = document.querySelector('.modal');
-    if (modal) modal.remove();
-  }
-
-  return; // Exit the function to skip the subscription popup
-} else {
-              showSubscriptionPopup();
+              document.getElementById('profile-phone-number').textContent = profile.phone_number;
+              const contactDetails = document.getElementById('contact-details');
+              contactDetails.classList.remove('hidden');
+            } else {
+              showSubscriptionPopup(profile); // Pass profile if needed
             }
           });
         }
       })
-      .catch(error => console.error("Error loading profile:", error));
+      .catch(error => console.error('Error loading profile:', error));
   }
 });
 
 async function checkMembership(email) {
   try {
-const response = await fetch('https://87c0-86-160-46-121.ngrok-free.app/check-subscription', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ email }),
-});
-
+    const response = await fetch('https://87c0-86-160-46-121.ngrok-free.app/check-subscription', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
 
     const data = await response.json();
-    console.log('Response from membership check:', data); // Debug server response
-    return data.active; // Use 'active' if the response has 'active' instead of 'isActive'
+    console.log('Response from membership check:', data);
+    return data.active;
   } catch (error) {
     console.error('Error checking membership:', error);
     return false;
   }
 }
 
-
-
-
-async function showSubscriptionPopup() {
-  // Check if the user is logged in
+async function showSubscriptionPopup(profile) {
   const currentUser = await checkLoggedInUser();
-  
+
   if (currentUser) {
-    // Check if the user is an active member
     const isMember = await checkMembership(currentUser.email);
 
     if (isMember) {
-  fetch('profiles.json')
-    .then(response => response.json())
-    .then(data => {
-      const profile = data.profiles.find(p => p.URL === userUrl);
-      
-      document.getElementById('profile-phone-number').textContent = profile.phone_number; // Example phone number
+      document.getElementById('profile-phone-number').textContent = profile.phone_number;
       const contactDetails = document.getElementById('contact-details');
-      contactDetails.classList.remove('hidden'); // Show contact details
-      return; // Exit the function as no subscription popup is needed
-    })
-    .catch(error => console.error("Error fetching profiles.json or processing data:", error)); // Handle fetch errors
-}
-      document.getElementById('profile-phone-number').textContent = profile.phone_number; // Example phone number
-      const contactDetails = document.getElementById('contact-details');
-      contactDetails.classList.remove('hidden'); // Show contact details
-      return; // Exit the function as no subscription popup is needed
+      contactDetails.classList.remove('hidden');
+      return;
     }
 
-    // If not a member, show the subscription popup
+    // Show subscription popup
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
@@ -162,24 +127,15 @@ async function showSubscriptionPopup() {
     `;
     document.body.appendChild(modal);
 
-    // Handle payment redirection
-    document.getElementById("proceed-to-payment").addEventListener("click", () => {
+    document.getElementById('proceed-to-payment').addEventListener('click', () => {
       redirectToPayment(currentUser.email);
     });
   } else {
-    // If the user is not logged in, prompt them to log in or create an account
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
-        <p>Unlock exclusive features:</p>
-        <ul class="subscription-benefits">
-          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
-          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
-          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-        </ul>
         <p>Please log in or create an account to proceed:</p>
         <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
@@ -189,39 +145,23 @@ async function showSubscriptionPopup() {
   }
 }
 
-
-// Check if the user is logged in
-async function checkLoggedInUser() {
-  return new Promise((resolve) => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
-    resolve(user);
-  });
-}
-
-// Redirect to login page
 function redirectToLogin() {
-  window.location.href = "login.html"; // Adjust this to your login page URL
+  window.location.href = 'login.html';
 }
 
 function redirectToPayment(email) {
-  // Construct the Stripe Payment Link with the user's email as a query parameter
   const paymentLink = `https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ?client_reference_id=${encodeURIComponent(email)}`;
-
-  // Redirect the user to the Stripe Payment Link
   window.location.href = paymentLink;
 }
 
-// Close modal
 function closeModal() {
-  const modal = document.querySelector(".modal");
+  const modal = document.querySelector('.modal');
   if (modal) modal.remove();
 }
 
-
-
 function showImageInModal(imageSrc) {
-  const modal = document.createElement("div");
-  modal.className = "modal";
+  const modal = document.createElement('div');
+  modal.className = 'modal';
   modal.innerHTML = `
     <div class="modal-content">
       <img src="${imageSrc}" class="modal-image" alt="Profile Image">
@@ -231,7 +171,3 @@ function showImageInModal(imageSrc) {
   document.body.appendChild(modal);
 }
 
-function closeModal() {
-  const modal = document.querySelector(".modal");
-  if (modal) modal.remove();
-}
