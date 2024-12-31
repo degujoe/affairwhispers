@@ -59,19 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
             reviewsSection.appendChild(reviewDiv);
           });
 
-          const ratingsSection = document.getElementById('profile-ratings');
-          profile.ratings.forEach(rating => {
-            const ratingDiv = document.createElement('div');
-            ratingDiv.className = 'rating';
-            ratingDiv.innerHTML = `
-              <p><strong>By:</strong> ${rating.rating_by}</p>
-              <p><strong>Date:</strong> ${rating.rating_date}</p>
-              <p><strong>Rating Description:</strong>
-              <p>${rating.rating_description}</p>
-            `;
-            ratingsSection.appendChild(ratingDiv);
-          });
-
 // Handle Contact Now functionality
           const contactButton = document.getElementById('contact-now-button');
           contactButton.addEventListener('click', async () => {
@@ -109,7 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function checkMembership(email) {
   try {
-const response = await fetch('https://31a1-86-160-46-121.ngrok-free.app/check-subscription', {
+const response = await fetch('https://55ca-86-160-46-121.ngrok-free.app/check-subscription', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({ email }),
@@ -136,20 +123,13 @@ async function showSubscriptionPopup() {
     // Check if the user is an active member
     const isMember = await checkMembership(currentUser.email);
 
-  const isMember = await checkMembership();
-  if (isMember) {
+    if (isMember) {
       // If the user is an active member, show phone number and rates instead of subscription popup
       document.getElementById('profile-phone-number').textContent = 'profile.phone_number'; // Example phone number
       const contactDetails = document.getElementById('contact-details');
       contactDetails.classList.remove('hidden'); // Show contact details
       return; // Exit the function as no subscription popup is needed
     }
-  } else {
-    showSubscriptionPopup(profile); // Pass the profile object here
-  }
-});
-
-
 
     // If not a member, show the subscription popup
     const modal = document.createElement('div');
