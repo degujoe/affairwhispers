@@ -125,7 +125,7 @@ async function showSubscriptionPopup() {
 
     if (isMember) {
       // If the user is an active member, show phone number and rates instead of subscription popup
-      document.getElementById('profile-phone-number').textContent = 'profile.phone_number'; // Example phone number
+      document.getElementById('profile-member_since').textContent = profile.member_since; // Example phone number
       const contactDetails = document.getElementById('contact-details');
       contactDetails.classList.remove('hidden'); // Show contact details
       return; // Exit the function as no subscription popup is needed
