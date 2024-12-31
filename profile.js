@@ -103,7 +103,7 @@ async function showSubscriptionPopup() {
     const isMember = await checkMembership(currentUser.email);
 
     if (isMember) {
-      // Fetch the profile and show the phone number
+      // Fetch the profile and show the phone number and rates
       const urlParams = new URLSearchParams(window.location.search);
       const userUrl = urlParams.get('user');
 
@@ -115,9 +115,25 @@ async function showSubscriptionPopup() {
 
             if (profile) {
               // Show the phone number
-              document.getElementById('profile-phone-number').textContent = profile.phone_number;
+              document.getElementById('profile-phone-number').textContent = profile.phone_number || "N/A";
+
+              // Show in-call rates
+              const inCallRates = profile.rates?.in_calls || {};
+              document.getElementById('in-call-rates').innerHTML = Object.entries(inCallRates)
+                .filter(([_, value]) => value !== "-" && value.trim() !== "")
+                .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
+                .join("") || "<li>No in-call rates available</li>";
+
+              // Show out-call rates
+              const outCallRates = profile.rates?.out_calls || {};
+              document.getElementById('out-call-rates').innerHTML = Object.entries(outCallRates)
+                .filter(([_, value]) => value !== "-" && value.trim() !== "")
+                .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
+                .join("") || "<li>No out-call rates available</li>";
+
+              // Show contact details section
               const contactDetails = document.getElementById('contact-details');
-              contactDetails.classList.remove('hidden'); // Show contact details
+              contactDetails.classList.remove('hidden'); // Make contact details visible
               return; // Exit the function as no subscription popup is needed
             }
           })
@@ -171,6 +187,7 @@ async function showSubscriptionPopup() {
     document.body.appendChild(modal);
   }
 }
+
 
 // Check if the user is logged in using local storage
 async function checkLoggedInUser() {
