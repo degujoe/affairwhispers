@@ -94,26 +94,68 @@ async function checkMembership(email) {
   }
 }
 
-async function showSubscriptionPopup(profile) {
+async function showSubscriptionPopup() {
+  // Check if the user is logged in using local storage
   const currentUser = await checkLoggedInUser();
 
   if (currentUser) {
+    // Check if the user is an active member
     const isMember = await checkMembership(currentUser.email);
 
     if (isMember) {
-      document.getElementById('profile-phone-number').textContent = profile.phone_number;
-      const contactDetails = document.getElementById('contact-details');
-      contactDetails.classList.remove('hidden');
-      return;
-    }
+      // Fetch the profile and show the phone number
+      const urlParams = new URLSearchParams(window.location.search);
+      const userUrl = urlParams.get('user');
 
-    // Show subscription popup
+      if (userUrl) {
+        fetch('profiles.json')
+          .then(response => response.json())
+          .then(data => {
+            const profile = data.profiles.find(p => p.URL === userUrl);
+
+            if (profile) {
+              // Show the phone number
+              document.getElementById('profile-phone-number').textContent = profile.phone_number;
+              const contactDetails = document.getElementById('contact-details');
+              contactDetails.classList.remove('hidden'); // Show contact details
+              return; // Exit the function as no subscription popup is needed
+            }
+          })
+          .catch(error => console.error("Error fetching profiles.json or processing data:", error));
+      }
+    } else {
+      // If not a member, show the subscription popup
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="modal-content">
+          <h2>Subscribe to AffairWhispers</h2>
+          <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
+          <p>Unlock exclusive features:</p>
+          <ul class="subscription-benefits">
+            <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
+            <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
+            <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+            <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+          </ul>
+          <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
+          <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      // Handle payment redirection
+      document.getElementById("proceed-to-payment").addEventListener("click", () => {
+        redirectToPayment(currentUser.email);
+      });
+    }
+  } else {
+    // If the user is not logged in, prompt them to log in or create an account
     const modal = document.createElement('div');
     modal.className = 'modal';
     modal.innerHTML = `
       <div class="modal-content">
         <h2>Subscribe to AffairWhispers</h2>
-        <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
         <p>Unlock exclusive features:</p>
         <ul class="subscription-benefits">
           <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
@@ -121,21 +163,6 @@ async function showSubscriptionPopup(profile) {
           <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
           <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
         </ul>
-        <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
-        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    document.getElementById('proceed-to-payment').addEventListener('click', () => {
-      redirectToPayment(currentUser.email);
-    });
-  } else {
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h2>Subscribe to AffairWhispers</h2>
         <p>Please log in or create an account to proceed:</p>
         <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
         <button onclick="closeModal()" class="btn-secondary">Cancel</button>
@@ -145,19 +172,33 @@ async function showSubscriptionPopup(profile) {
   }
 }
 
+// Check if the user is logged in using local storage
+async function checkLoggedInUser() {
+  return new Promise((resolve) => {
+    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Retrieves user from local storage
+    resolve(user);
+  });
+}
+
+// Redirect to login page
 function redirectToLogin() {
-  window.location.href = 'login.html';
+  window.location.href = "login.html"; // Adjust this to your login page URL
 }
 
 function redirectToPayment(email) {
+  // Construct the Stripe Payment Link with the user's email as a query parameter
   const paymentLink = `https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ?client_reference_id=${encodeURIComponent(email)}`;
+
+  // Redirect the user to the Stripe Payment Link
   window.location.href = paymentLink;
 }
 
+// Close modal
 function closeModal() {
-  const modal = document.querySelector('.modal');
+  const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
+
 
 function showImageInModal(imageSrc) {
   const modal = document.createElement('div');
