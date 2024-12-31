@@ -136,12 +136,12 @@ async function showSubscriptionPopup() {
     // Check if the user is an active member
     const isMember = await checkMembership(currentUser.email);
 
-if (isMember) {
-  // Display the phone number
-  document.getElementById('profile-phone-number').textContent = profile.phone_number || 'Phone number not available';
-  const contactDetails = document.getElementById('contact-details');
-  contactDetails.classList.remove('hidden'); // Show contact details
-  return; // Exit the function as no subscription popup is needed
+  if (isMember) {
+    // Display the phone number
+    document.getElementById('profile-phone-number').textContent = profile.phone_number || 'Phone number not available';
+    const contactDetails = document.getElementById('contact-details');
+    contactDetails.classList.remove('hidden'); // Show contact details
+    return; // Exit the function as no subscription popup is needed
 }
 
 
