@@ -136,7 +136,6 @@ async function showSubscriptionPopup() {
     // Check if the user is an active member
     const isMember = await checkMembership(currentUser.email);
 
-  contactButton.addEventListener('click', async () => {
   const isMember = await checkMembership();
   if (isMember) {
     // Reveal phone number and rates
