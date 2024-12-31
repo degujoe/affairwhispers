@@ -119,43 +119,7 @@ async function showSubscriptionPopup() {
   // Check if the user is logged in
   const currentUser = await checkLoggedInUser();
   
-  if (currentUser) {
-    // Check if the user is an active member
-    const isMember = await checkMembership(currentUser.email);
-
-    if (isMember) {
-        
-      document.getElementById('profile-phone_number').textContent = profile.phone_number; // Example phone number
-      const contactDetails = document.getElementById('contact-details');
-      contactDetails.classList.remove('hidden'); // Show contact details
-      return; // Exit the function as no subscription popup is needed
-    }
-
-    // If not a member, show the subscription popup
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.innerHTML = `
-      <div class="modal-content">
-        <h2>Subscribe to AffairWhispers</h2>
-        <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
-        <p>Unlock exclusive features:</p>
-        <ul class="subscription-benefits">
-          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
-          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
-          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-        </ul>
-        <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
-        <button onclick="closeModal()" class="btn-secondary">Cancel</button>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    // Handle payment redirection
-    document.getElementById("proceed-to-payment").addEventListener("click", () => {
-      redirectToPayment(currentUser.email);
-    });
-  } else {
+  if (!currentUser) {
     // If the user is not logged in, prompt them to log in or create an account
     const modal = document.createElement('div');
     modal.className = 'modal';
@@ -175,9 +139,69 @@ async function showSubscriptionPopup() {
       </div>
     `;
     document.body.appendChild(modal);
+    return; // Exit function
   }
-}
 
+  // Define `data` and `profile` by fetching `profiles.json`
+  const urlParams = new URLSearchParams(window.location.search);
+  const userUrl = urlParams.get('user');
+
+  if (!userUrl) {
+    console.error('User URL is missing');
+    return;
+  }
+
+  let profile = null;
+  try {
+    const response = await fetch('profiles.json');
+    const data = await response.json();
+    profile = data.profiles.find(p => p.URL === userUrl);
+  } catch (error) {
+    console.error('Error fetching profiles:', error);
+    return;
+  }
+
+  if (!profile) {
+    console.error('Profile not found');
+    return;
+  }
+
+  // Check if the user is an active member
+  const isMember = await checkMembership(currentUser.email);
+
+  if (isMember) {
+    // Show phone number and contact details
+    document.getElementById('profile-phone_number').textContent = profile.phone_number || 'Phone number not available';
+    const contactDetails = document.getElementById('contact-details');
+    contactDetails.classList.remove('hidden'); // Show contact details
+    return; // Exit the function as no subscription popup is needed
+  }
+
+  // If not a member, show the subscription popup
+  const modal = document.createElement('div');
+  modal.className = 'modal';
+  modal.innerHTML = `
+    <div class="modal-content">
+      <h2>Subscribe to AffairWhispers</h2>
+      <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
+      <p>Unlock exclusive features:</p>
+      <ul class="subscription-benefits">
+        <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
+        <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
+        <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+        <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+      </ul>
+      <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
+      <button onclick="closeModal()" class="btn-secondary">Cancel</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  // Handle payment redirection
+  document.getElementById("proceed-to-payment").addEventListener("click", () => {
+    redirectToPayment(currentUser.email);
+  });
+}
 
 // Check if the user is logged in
 async function checkLoggedInUser() {
@@ -205,6 +229,7 @@ function closeModal() {
   const modal = document.querySelector(".modal");
   if (modal) modal.remove();
 }
+
 
 
 
