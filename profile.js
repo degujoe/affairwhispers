@@ -124,14 +124,18 @@ async function showSubscriptionPopup() {
     const isMember = await checkMembership(currentUser.email);
 
     if (isMember) {
-    
-      fetch('profiles.json')
-        .then(response => response.json())
-        .then(data => {
-          const profile = data.profiles.find(p => p.URL === userUrl);
+  fetch('profiles.json')
+    .then(response => response.json())
+    .then(data => {
+      const profile = data.profiles.find(p => p.URL === userUrl);
       
-      
-      
+      document.getElementById('profile-phone-number').textContent = profile.phone_number; // Example phone number
+      const contactDetails = document.getElementById('contact-details');
+      contactDetails.classList.remove('hidden'); // Show contact details
+      return; // Exit the function as no subscription popup is needed
+    })
+    .catch(error => console.error("Error fetching profiles.json or processing data:", error)); // Handle fetch errors
+}
       document.getElementById('profile-phone-number').textContent = profile.phone_number; // Example phone number
       const contactDetails = document.getElementById('contact-details');
       contactDetails.classList.remove('hidden'); // Show contact details
