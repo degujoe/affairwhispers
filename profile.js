@@ -118,30 +118,18 @@ const response = await fetch('https://87c0-86-160-46-121.ngrok-free.app/check-su
 async function showSubscriptionPopup() {
   // Check if the user is logged in
   const currentUser = await checkLoggedInUser();
-
+  
   if (currentUser) {
-    // Fetch profile data
-    try {
-      const response = await fetch('profiles.json');
-      const data = await response.json();
-      const userUrl = new URLSearchParams(window.location.search).get('user');
-      const profile = data.profiles.find(p => p.URL === userUrl);
+    // Check if the user is an active member
+    const isMember = await checkMembership(currentUser.email);
 
-      if (!profile) {
-        console.error('Profile not found for the user.');
-        return;
-      }
-
-      // Check if the user is an active member
-      const isMember = await checkMembership(currentUser.email);
-
-      if (isMember) {
-        // If the user is an active member, show phone number and rates instead of subscription popup
-        document.getElementById('profile-phone-number').textContent = profile.phone_number || 'N/A'; // Display phone number
-        const contactDetails = document.getElementById('contact-details');
-        contactDetails.classList.remove('hidden'); // Show contact details
-        return; // Exit the function as no subscription popup is needed
-      }
+    if (isMember) {
+      // If the user is an active member, show phone number and rates instead of subscription popup
+      document.getElementById('profile-phone-number').textContent = 'profile.phone_number'; // Example phone number
+      const contactDetails = document.getElementById('contact-details');
+      contactDetails.classList.remove('hidden'); // Show contact details
+      return; // Exit the function as no subscription popup is needed
+    }
 
     // If not a member, show the subscription popup
     const modal = document.createElement('div');
