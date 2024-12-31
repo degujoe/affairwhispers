@@ -118,7 +118,7 @@ const response = await fetch('https://31a1-86-160-46-121.ngrok-free.app/check-su
 async function showSubscriptionPopup() {
   // Check if the user is logged in
   const currentUser = await checkLoggedInUser();
-  
+
   if (!currentUser) {
     // If the user is not logged in, prompt them to log in or create an account
     const modal = document.createElement('div');
@@ -170,10 +170,21 @@ async function showSubscriptionPopup() {
   const isMember = await checkMembership(currentUser.email);
 
   if (isMember) {
-    // Show phone number and contact details
-    document.getElementById('profile-phone_number').textContent = profile.phone_number || 'Phone number not available';
+    // Ensure the element exists before updating its textContent
+    const phoneNumberElement = document.getElementById('profile-phone_number');
+    if (phoneNumberElement) {
+      phoneNumberElement.textContent = profile.phone_number || 'Phone number not available';
+    } else {
+      console.error('Element with ID "profile-phone_number" not found in the DOM');
+    }
+
     const contactDetails = document.getElementById('contact-details');
-    contactDetails.classList.remove('hidden'); // Show contact details
+    if (contactDetails) {
+      contactDetails.classList.remove('hidden'); // Show contact details
+    } else {
+      console.error('Element with ID "contact-details" not found in the DOM');
+    }
+
     return; // Exit the function as no subscription popup is needed
   }
 
@@ -201,33 +212,6 @@ async function showSubscriptionPopup() {
   document.getElementById("proceed-to-payment").addEventListener("click", () => {
     redirectToPayment(currentUser.email);
   });
-}
-
-// Check if the user is logged in
-async function checkLoggedInUser() {
-  return new Promise((resolve) => {
-    const user = JSON.parse(localStorage.getItem("loggedInUser")); // Replace this with a Firebase Auth check if necessary
-    resolve(user);
-  });
-}
-
-// Redirect to login page
-function redirectToLogin() {
-  window.location.href = "login.html"; // Adjust this to your login page URL
-}
-
-function redirectToPayment(email) {
-  // Construct the Stripe Payment Link with the user's email as a query parameter
-  const paymentLink = `https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ?client_reference_id=${encodeURIComponent(email)}`;
-
-  // Redirect the user to the Stripe Payment Link
-  window.location.href = paymentLink;
-}
-
-// Close modal
-function closeModal() {
-  const modal = document.querySelector(".modal");
-  if (modal) modal.remove();
 }
 
 
