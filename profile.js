@@ -28,6 +28,22 @@ document.addEventListener('DOMContentLoaded', function () {
           document.getElementById('profile-pubic-hair').textContent = profile.pubic_hair;
           document.getElementById('profile-phone-number').textContent = profile.phone_number || 'Phone number not available';
 
+          if (profile.rates) {
+            const ratesSection = document.getElementById('profile-rates');
+            ratesSection.innerHTML = `
+              <h3>Rates</h3>
+              <p><strong>Currency:</strong> ${profile.rates.currency}</p>
+              <h4>In Calls</h4>
+              <ul>
+                ${Object.entries(profile.rates.in_calls).map(([key, value]) => `<li>${key}: ${value || 'N/A'}</li>`).join('')}
+              </ul>
+              <h4>Out Calls</h4>
+              <ul>
+                ${Object.entries(profile.rates.out_calls).map(([key, value]) => `<li>${key}: ${value || 'N/A'}</li>`).join('')}
+              </ul>
+            `;
+          }
+
           // Set main profile image
           const mainImage = profile.images[0] || 'https://via.placeholder.com/150';
           document.getElementById('profile-main-image').src = mainImage;
