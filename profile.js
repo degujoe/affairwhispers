@@ -138,10 +138,12 @@ async function showSubscriptionPopup() {
 
   const isMember = await checkMembership();
   if (isMember) {
-    // Reveal phone number and rates
-    document.getElementById('profile-phone-number').textContent = profile.phone_number || 'Phone number not available';
-    const contactDetails = document.getElementById('contact-details');
-    contactDetails.classList.remove('hidden');
+      // If the user is an active member, show phone number and rates instead of subscription popup
+      document.getElementById('profile-phone-number').textContent = 'profile.phone_number'; // Example phone number
+      const contactDetails = document.getElementById('contact-details');
+      contactDetails.classList.remove('hidden'); // Show contact details
+      return; // Exit the function as no subscription popup is needed
+    }
   } else {
     showSubscriptionPopup(profile); // Pass the profile object here
   }
