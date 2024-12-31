@@ -59,6 +59,22 @@ document.addEventListener('DOMContentLoaded', function () {
             reviewsSection.appendChild(reviewDiv);
           });
 
+          const ratingsSection = document.getElementById('profile-ratings');
+          profile.ratings.forEach(rating => {
+            const ratingDiv = document.createElement('div');
+            ratingDiv.className = 'rating';
+            ratingDiv.innerHTML = `
+              <p><strong>By:</strong> ${rating.report_by}</p>
+              <p><strong>Date:</strong> ${rating.meet_date}</p>
+              <p><strong>Overall Rating:</strong> ${rating.overall_rating}</p>
+              <p><strong>Physical Rating:</strong> ${rating.physical_score}</p>
+              <p>${rating.physical_description}</p>
+              <p><strong>Personality Rating:</strong> ${rating.personality_score}</p>
+              <p>${rating.personality_description}</p>
+            `;
+            ratingsSection.appendChild(ratingDiv);
+          });
+
 // Handle Contact Now functionality
           const contactButton = document.getElementById('contact-now-button');
           contactButton.addEventListener('click', async () => {
