@@ -54,4 +54,3 @@ function logOutUser() {
     console.log("User logged out.");
   });
 }
-
