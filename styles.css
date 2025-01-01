@@ -160,7 +160,7 @@ footer {
 .ratings-section .rating {
   margin-bottom: 20px;
   padding: 10px;
-  border: 1px solid #ddd; can you integrate  
+  border: 1px solid #ddd;
   border-radius: 5px;
   background: #f9f9f9;
 }
@@ -257,7 +257,7 @@ footer {
 ul {
   list-style-type: none;
   padding: 0;
-
+}
 
 ul li {
   margin: 5px 0;
