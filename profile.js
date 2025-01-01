@@ -120,37 +120,35 @@ async function showSubscriptionPopup() {
       const urlParams = new URLSearchParams(window.location.search);
       const userUrl = urlParams.get('user');
 
-if (profile) {
-  // Show the phone number
-  document.getElementById('profile-phone-number').textContent = profile.phone_number || "N/A";
+      if (userUrl) {
+        fetch('profiles.json')
+          .then(response => response.json())
+          .then(data => {
+            const profile = data.profiles.find(p => p.URL === userUrl);
 
-  // Show in-call rates
-  if (profile.rates && profile.rates.in_calls) {
-    const inCallRates = profile.rates.in_calls;
-    document.getElementById('in-call-rates').innerHTML = Object.entries(inCallRates)
-      .filter(([_, value]) => value !== "-" && value.trim() !== "")
-      .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
-      .join("");
-  } else {
-    document.getElementById('in-call-rates').innerHTML = "<li>No in-call rates available</li>";
-  }
+            if (profile) {
+              // Show the phone number
+              document.getElementById('profile-phone-number').textContent = profile.phone_number || "N/A";
 
-  // Show out-call rates
-  if (profile.rates && profile.rates.out_calls) {
-    const outCallRates = profile.rates.out_calls;
-    document.getElementById('out-call-rates').innerHTML = Object.entries(outCallRates)
-      .filter(([_, value]) => value !== "-" && value.trim() !== "")
-      .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
-      .join("");
-  } else {
-    document.getElementById('out-call-rates').innerHTML = "<li>No out-call rates available</li>";
-  }
+              // Show in-call rates
+              const inCallRates = profile.rates?.in_calls || {};
+              document.getElementById('in-call-rates').innerHTML = Object.entries(inCallRates)
+                .filter(([_, value]) => value !== "-" && value.trim() !== "")
+                .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
+                .join("") || "<li>No in-call rates available</li>";
 
-  // Show contact details section
-  const contactDetails = document.getElementById('contact-details');
-  contactDetails.classList.remove('hidden'); // Make contact details visible
-}
+              // Show out-call rates
+              const outCallRates = profile.rates?.out_calls || {};
+              document.getElementById('out-call-rates').innerHTML = Object.entries(outCallRates)
+                .filter(([_, value]) => value !== "-" && value.trim() !== "")
+                .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
+                .join("") || "<li>No out-call rates available</li>";
 
+              // Show contact details section
+              const contactDetails = document.getElementById('contact-details');
+              contactDetails.classList.remove('hidden'); // Make contact details visible
+              return; // Exit the function as no subscription popup is needed
+            }
           })
           .catch(error => console.error("Error fetching profiles.json or processing data:", error));
       }
@@ -243,3 +241,4 @@ function showImageInModal(imageSrc) {
   `;
   document.body.appendChild(modal);
 }
+
