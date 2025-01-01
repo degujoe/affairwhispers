@@ -146,6 +146,7 @@ footer {
 
 /* Reviews Section */
 .reviews-section .review {
+  text-align: left;
   margin-bottom: 20px;
   padding: 10px;
   border: 1px solid #ddd;
@@ -158,6 +159,7 @@ footer {
 }
 
 .ratings-section .rating {
+  text-align: left;
   margin-bottom: 20px;
   padding: 10px;
   border: 1px solid #ddd;
