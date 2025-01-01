@@ -127,28 +127,32 @@ async function showSubscriptionPopup() {
             const profile = data.profiles.find(p => p.URL === userUrl);
 
             if (profile) {
-              // Show the phone number
-              document.getElementById('profile-phone-number').textContent = profile.phone_number || "N/A";
+  console.log("Profile data loaded:", profile);
 
-              // Show in-call rates
-              const inCallRates = profile.rates?.in_calls || {};
-              document.getElementById('in-call-rates').innerHTML = Object.entries(inCallRates)
-                .filter(([_, value]) => value !== "-" && value.trim() !== "")
-                .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
-                .join("") || "<li>No in-call rates available</li>";
+  // Show the phone number
+  document.getElementById('profile-phone-number').textContent = profile.phone_number || "N/A";
 
-              // Show out-call rates
-              const outCallRates = profile.rates?.out_calls || {};
-              document.getElementById('out-call-rates').innerHTML = Object.entries(outCallRates)
-                .filter(([_, value]) => value !== "-" && value.trim() !== "")
-                .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
-                .join("") || "<li>No out-call rates available</li>";
+  // Show in-call rates
+  const inCallRates = profile.rates?.in_calls || {};
+  console.log("In-call rates:", inCallRates);
+  document.getElementById('in-call-rates').innerHTML = Object.entries(inCallRates)
+    .filter(([_, value]) => value !== "-" && value.trim() !== "")
+    .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
+    .join("") || "<li>No in-call rates available</li>";
 
-              // Show contact details section
-              const contactDetails = document.getElementById('contact-details');
-              contactDetails.classList.remove('hidden'); // Make contact details visible
-              return; // Exit the function as no subscription popup is needed
-            }
+  // Show out-call rates
+  const outCallRates = profile.rates?.out_calls || {};
+  console.log("Out-call rates:", outCallRates);
+  document.getElementById('out-call-rates').innerHTML = Object.entries(outCallRates)
+    .filter(([_, value]) => value !== "-" && value.trim() !== "")
+    .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
+    .join("") || "<li>No out-call rates available</li>";
+
+  // Show contact details section
+  const contactDetails = document.getElementById('contact-details');
+  contactDetails.classList.remove('hidden'); // Make contact details visible
+}
+
           })
           .catch(error => console.error("Error fetching profiles.json or processing data:", error));
       }
