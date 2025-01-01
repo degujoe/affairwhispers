@@ -127,26 +127,30 @@ async function showSubscriptionPopup() {
             const profile = data.profiles.find(p => p.URL === userUrl);
 
             if (profile) {
-  console.log("Profile data loaded:", profile);
-
-  // Show the phone number
+  // Show phone number
   document.getElementById('profile-phone-number').textContent = profile.phone_number || "N/A";
 
-  // Show in-call rates
-  const inCallRates = profile.rates?.in_calls || {};
-  console.log("In-call rates:", inCallRates);
-  document.getElementById('in-call-rates').innerHTML = Object.entries(inCallRates)
-    .filter(([_, value]) => value !== "-" && value.trim() !== "")
-    .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
-    .join("") || "<li>No in-call rates available</li>";
+  // Show individual in-call rates
+  document.getElementById('in-call-15-mins').textContent = profile.rates?.in_calls?.["15_mins"] || "N/A";
+  document.getElementById('in-call-30-mins').textContent = profile.rates?.in_calls?.["30_mins"] || "N/A";
+  document.getElementById('in-call-45-mins').textContent = profile.rates?.in_calls?.["45_mins"] || "N/A";
+  document.getElementById('in-call-1-hour').textContent = profile.rates?.in_calls?.["1_hour"] || "N/A";
+  document.getElementById('in-call-1.5-hours').textContent = profile.rates?.in_calls?.["1.5_hours"] || "N/A";
+  document.getElementById('in-call-2-hours').textContent = profile.rates?.in_calls?.["2_hours"] || "N/A";
+  document.getElementById('in-call-3-hours').textContent = profile.rates?.in_calls?.["3_hours"] || "N/A";
+  document.getElementById('in-call-4-hours').textContent = profile.rates?.in_calls?.["4_hours"] || "N/A";
+  document.getElementById('in-call-overnight').textContent = profile.rates?.in_calls?.["overnight"] || "N/A";
 
-  // Show out-call rates
-  const outCallRates = profile.rates?.out_calls || {};
-  console.log("Out-call rates:", outCallRates);
-  document.getElementById('out-call-rates').innerHTML = Object.entries(outCallRates)
-    .filter(([_, value]) => value !== "-" && value.trim() !== "")
-    .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
-    .join("") || "<li>No out-call rates available</li>";
+  // Show individual out-call rates
+  document.getElementById('out-call-15-mins').textContent = profile.rates?.out_calls?.["15_mins"] || "N/A";
+  document.getElementById('out-call-30-mins').textContent = profile.rates?.out_calls?.["30_mins"] || "N/A";
+  document.getElementById('out-call-45-mins').textContent = profile.rates?.out_calls?.["45_mins"] || "N/A";
+  document.getElementById('out-call-1-hour').textContent = profile.rates?.out_calls?.["1_hour"] || "N/A";
+  document.getElementById('out-call-1.5-hours').textContent = profile.rates?.out_calls?.["1.5_hours"] || "N/A";
+  document.getElementById('out-call-2-hours').textContent = profile.rates?.out_calls?.["2_hours"] || "N/A";
+  document.getElementById('out-call-3-hours').textContent = profile.rates?.out_calls?.["3_hours"] || "N/A";
+  document.getElementById('out-call-4-hours').textContent = profile.rates?.out_calls?.["4_hours"] || "N/A";
+  document.getElementById('out-call-overnight').textContent = profile.rates?.out_calls?.["overnight"] || "N/A";
 
   // Show contact details section
   const contactDetails = document.getElementById('contact-details');
