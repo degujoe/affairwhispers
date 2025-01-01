@@ -130,32 +130,35 @@ async function showSubscriptionPopup() {
   // Show phone number
   document.getElementById('profile-phone-number').textContent = profile.phone_number || "N/A";
 
-  // Show individual in-call rates
-  document.getElementById('in-call-15-mins').textContent = profile.rates?.in_calls?.["15_mins"] || "N/A";
-  document.getElementById('in-call-30-mins').textContent = profile.rates?.in_calls?.["30_mins"] || "N/A";
-  document.getElementById('in-call-45-mins').textContent = profile.rates?.in_calls?.["45_mins"] || "N/A";
-  document.getElementById('in-call-1-hour').textContent = profile.rates?.in_calls?.["1_hour"] || "N/A";
-  document.getElementById('in-call-1.5-hours').textContent = profile.rates?.in_calls?.["1.5_hours"] || "N/A";
-  document.getElementById('in-call-2-hours').textContent = profile.rates?.in_calls?.["2_hours"] || "N/A";
-  document.getElementById('in-call-3-hours').textContent = profile.rates?.in_calls?.["3_hours"] || "N/A";
-  document.getElementById('in-call-4-hours').textContent = profile.rates?.in_calls?.["4_hours"] || "N/A";
-  document.getElementById('in-call-overnight').textContent = profile.rates?.in_calls?.["overnight"] || "N/A";
+  // Fetch and display in-call rates
+  const inCallRates = profile.rates?.in_calls || {};
+  document.getElementById('in-call-15-mins').textContent = inCallRates["15_mins"] || "N/A";
+  document.getElementById('in-call-30-mins').textContent = inCallRates["30_mins"] || "N/A";
+  document.getElementById('in-call-45-mins').textContent = inCallRates["45_mins"] || "N/A";
+  document.getElementById('in-call-1-hour').textContent = inCallRates["1_hour"] || "N/A";
+  document.getElementById('in-call-1.5-hours').textContent = inCallRates["1.5_hours"] || "N/A";
+  document.getElementById('in-call-2-hours').textContent = inCallRates["2_hours"] || "N/A";
+  document.getElementById('in-call-3-hours').textContent = inCallRates["3_hours"] || "N/A";
+  document.getElementById('in-call-4-hours').textContent = inCallRates["4_hours"] || "N/A";
+  document.getElementById('in-call-overnight').textContent = inCallRates["overnight"] || "N/A";
 
-  // Show individual out-call rates
-  document.getElementById('out-call-15-mins').textContent = profile.rates?.out_calls?.["15_mins"] || "N/A";
-  document.getElementById('out-call-30-mins').textContent = profile.rates?.out_calls?.["30_mins"] || "N/A";
-  document.getElementById('out-call-45-mins').textContent = profile.rates?.out_calls?.["45_mins"] || "N/A";
-  document.getElementById('out-call-1-hour').textContent = profile.rates?.out_calls?.["1_hour"] || "N/A";
-  document.getElementById('out-call-1.5-hours').textContent = profile.rates?.out_calls?.["1.5_hours"] || "N/A";
-  document.getElementById('out-call-2-hours').textContent = profile.rates?.out_calls?.["2_hours"] || "N/A";
-  document.getElementById('out-call-3-hours').textContent = profile.rates?.out_calls?.["3_hours"] || "N/A";
-  document.getElementById('out-call-4-hours').textContent = profile.rates?.out_calls?.["4_hours"] || "N/A";
-  document.getElementById('out-call-overnight').textContent = profile.rates?.out_calls?.["overnight"] || "N/A";
+  // Fetch and display out-call rates
+  const outCallRates = profile.rates?.out_calls || {};
+  document.getElementById('out-call-15-mins').textContent = outCallRates["15_mins"] || "N/A";
+  document.getElementById('out-call-30-mins').textContent = outCallRates["30_mins"] || "N/A";
+  document.getElementById('out-call-45-mins').textContent = outCallRates["45_mins"] || "N/A";
+  document.getElementById('out-call-1-hour').textContent = outCallRates["1_hour"] || "N/A";
+  document.getElementById('out-call-1.5-hours').textContent = outCallRates["1.5_hours"] || "N/A";
+  document.getElementById('out-call-2-hours').textContent = outCallRates["2_hours"] || "N/A";
+  document.getElementById('out-call-3-hours').textContent = outCallRates["3_hours"] || "N/A";
+  document.getElementById('out-call-4-hours').textContent = outCallRates["4_hours"] || "N/A";
+  document.getElementById('out-call-overnight').textContent = outCallRates["overnight"] || "N/A";
 
   // Show contact details section
   const contactDetails = document.getElementById('contact-details');
   contactDetails.classList.remove('hidden'); // Make contact details visible
 }
+
 
           })
           .catch(error => console.error("Error fetching profiles.json or processing data:", error));
