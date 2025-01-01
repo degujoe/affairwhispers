@@ -31,6 +31,26 @@ document.addEventListener('DOMContentLoaded', function () {
           const mainImage = profile.images[0] || 'https://via.placeholder.com/150';
           document.getElementById('profile-main-image').src = mainImage;
 
+          // Populate in-call rates
+          const inCallRates = profile.rates?.in_calls || {};
+          const inCallRatesContainer = document.getElementById('in-call-rates');
+          inCallRatesContainer.innerHTML = '';
+          Object.entries(inCallRates).forEach(([key, value]) => {
+            const li = document.createElement('li');
+            li.textContent = `${key.replace("_", " ")}: £${value === '-' ? 'N/A' : value}`;
+            inCallRatesContainer.appendChild(li);
+          });
+
+          // Populate out-call rates
+          const outCallRates = profile.rates?.out_calls || {};
+          const outCallRatesContainer = document.getElementById('out-call-rates');
+          outCallRatesContainer.innerHTML = '';
+          Object.entries(outCallRates).forEach(([key, value]) => {
+            const li = document.createElement('li');
+            li.textContent = `${key.replace("_", " ")}: £${value === '-' ? 'N/A' : value}`;
+            outCallRatesContainer.appendChild(li);
+          });
+
           // Populate image thumbnails
           const thumbnailsContainer = document.getElementById('profile-thumbnails');
           profile.images.forEach(image => {
