@@ -131,18 +131,21 @@ async function showSubscriptionPopup() {
               document.getElementById('profile-phone-number').textContent = profile.phone_number || "N/A";
 
               // Show in-call rates
-              const inCallRates = profile.rates?.in_calls || {};
-              document.getElementById('in-call-rates').innerHTML = Object.entries(inCallRates)
-                .filter(([_, value]) => value !== "-" && value.trim() !== "")
-                .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
-                .join("") || "<li>No in-call rates available</li>";
+const inCallRates = profile.rates?.in_calls || {};
+document.getElementById('in-call-rates').innerHTML =
+  Object.entries(inCallRates)
+    .filter(([_, value]) => value !== "-" && value.trim() !== "") // Filter out empty or placeholder values
+    .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
+    .join("") || "<li>No in-call rates available</li>";
 
-              // Show out-call rates
-              const outCallRates = profile.rates?.out_calls || {};
-              document.getElementById('out-call-rates').innerHTML = Object.entries(outCallRates)
-                .filter(([_, value]) => value !== "-" && value.trim() !== "")
-                .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
-                .join("") || "<li>No out-call rates available</li>";
+// Show out-call rates
+const outCallRates = profile.rates?.out_calls || {};
+document.getElementById('out-call-rates').innerHTML =
+  Object.entries(outCallRates)
+    .filter(([_, value]) => value !== "-" && value.trim() !== "") // Filter out empty or placeholder values
+    .map(([key, value]) => `<li>${key.replace("_", " ")}: £${value}</li>`)
+    .join("") || "<li>No out-call rates available</li>";
+
 
               // Show contact details section
               const contactDetails = document.getElementById('contact-details');
