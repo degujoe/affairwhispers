@@ -92,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function checkMembership(email) {
   try {
-    const response = await fetch('https://99c9-86-160-46-121.ngrok-free.app/check-subscription', {
+    const response = await fetch('https://ebde-86-160-46-121.ngrok-free.app/check-subscription', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
@@ -217,7 +217,7 @@ function redirectToLogin() {
 
 function redirectToPayment(email) {
   // Construct the Stripe Payment Link with the user's email as a query parameter
-  const paymentLink = `https://buy.stripe.com/4gw8yW4QJba580wcMO?client_reference_id=${encodeURIComponent(email)}`;
+  const paymentLink = `https://buy.stripe.com/test_7sI9DwcLn4iVdmEdQQ?client_reference_id=${encodeURIComponent(email)}`;
 
   // Redirect the user to the Stripe Payment Link
   window.location.href = paymentLink;
