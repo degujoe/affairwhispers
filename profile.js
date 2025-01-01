@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
           inCallRatesContainer.innerHTML = '';
           Object.entries(inCallRates).forEach(([key, value]) => {
             const li = document.createElement('li');
-            li.textContent = `${key.replace("_", " ")}: £${value === '-' ? '' : value}`;
+            li.textContent = `${key.replace("_", " ")}: £${value === '-' ? '-' : value}`;
             inCallRatesContainer.appendChild(li);
           });
 
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
           outCallRatesContainer.innerHTML = '';
           Object.entries(outCallRates).forEach(([key, value]) => {
             const li = document.createElement('li');
-            li.textContent = `${key.replace("_", " ")}: £${value === '-' ? '' : value}`;
+            li.textContent = `${key.replace("_", " ")}: £${value === '-' ? '-' : value}`;
             outCallRatesContainer.appendChild(li);
           });
 
