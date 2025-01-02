@@ -182,10 +182,10 @@ async function showSubscriptionPopup() {
           <p>Welcome back, <strong>${currentUser.email}</strong>!</p>
           <p>Unlock exclusive features:</p>
           <ul class="subscription-benefits">
-            <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
-            <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-            <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
+            <li><strong>Contact Feature Unlocked:</strong> Directly connect with all profiles.</li>
+            <li><strong>Discreet:</strong> Payment appears as AMZNMKTPLACE (same as purchasing from Amazon).</li>
             <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+            <li><strong>Access Verified Profiles:</strong>All for just £30!</li>
           </ul>
           <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
           <button onclick="closeModal()" class="btn-secondary">Cancel</button>
