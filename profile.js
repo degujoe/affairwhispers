@@ -237,7 +237,7 @@ function redirectToLogin() {
 
 function redirectToPayment(email) {
   // Construct the Stripe Payment Link with the user's email as a query parameter
-  const paymentLink = `https://buy.stripe.com/4gw8yW4QJba580wcMO?client_reference_id=${encodeURIComponent(email)}`;
+  const paymentLink = `https://buy.stripe.com/bIY9D082V3HD1C87st?client_reference_id=${encodeURIComponent(email)}`;
 
   // Redirect the user to the Stripe Payment Link
   window.location.href = paymentLink;
