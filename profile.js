@@ -207,10 +207,10 @@ async function showSubscriptionPopup() {
         <h2>Subscribe to AffairWhispers</h2>
         <p>Unlock exclusive features:</p>
         <ul class="subscription-benefits">
-          <li><strong>Access Verified Profiles:</strong> Every profile is ID verified for authenticity.</li>
-          <li><strong>Phone Numbers Unlocked:</strong> Directly connect with your matches.</li>
-          <li><strong>Detailed Profiles:</strong> Full access to preferences, interests, and more.</li>
-          <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+            <li><strong>Contact Feature Unlocked:</strong> Directly connect with all profiles.</li>
+            <li><strong>Discreet:</strong> Payment appears as AMZNMKTPLACE (same as purchasing from Amazon).</li>
+            <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
+            <li><strong>Access Verified Profiles:</strong>All for just £30!</li>
         </ul>
         <p>Please log in or create an account to proceed:</p>
         <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
