@@ -37,7 +37,7 @@ registerForm.addEventListener("submit", async (e) => {
       createdAt: new Date().toISOString(), // Timestamp
     });
 
-    document.getElementById("auth-message").textContent = `Registration successful! Welcome, ${user.email}`;
+    document.getElementById("auth-message").textContent = `Registration successful! Please now log in, ${user.email}`;
   } catch (error) {
     document.getElementById("auth-message").textContent = `Error: ${error.message}`;
   }
