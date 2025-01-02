@@ -185,7 +185,7 @@ async function showSubscriptionPopup() {
             <li><strong>Contact Feature Unlocked:</strong> Directly connect with all profiles.</li>
             <li><strong>Discreet:</strong> Payment appears as AMZNMKTPLACE (same as purchasing from Amazon).</li>
             <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-            <li><strong>Access Verified Profiles:</strong>All for just £30!</li>
+            <li><strong>Great Value:</strong> All for just <strong>£30!</strong></li>
           </ul>
           <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
           <button onclick="closeModal()" class="btn-secondary">Cancel</button>
@@ -210,7 +210,7 @@ async function showSubscriptionPopup() {
             <li><strong>Contact Feature Unlocked:</strong> Directly connect with all profiles.</li>
             <li><strong>Discreet:</strong> Payment appears as AMZNMKTPLACE (same as purchasing from Amazon).</li>
             <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-            <li><strong>Access Verified Profiles:</strong>All for just £30!</li>
+            <li><strong>Great Value:</strong> All for just <strong>£30!</strong></li>
         </ul>
         <p>Please log in or create an account to proceed:</p>
         <button onclick="redirectToLogin()" class="btn-primary">Log In / Sign Up</button>
