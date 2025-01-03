@@ -187,6 +187,7 @@ async function showSubscriptionPopup() {
             <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
             <li><strong>Great Value:</strong> All for just <strong>£30!</strong></li>
           </ul>
+          <p>By clicking "Proceed to Payment" you are agreeing to the terms of service</p>
           <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
           <button onclick="closeModal()" class="btn-secondary">Cancel</button>
         </div>
