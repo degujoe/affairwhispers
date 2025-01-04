@@ -70,7 +70,7 @@ loginForm.addEventListener("submit", async (e) => {
     // Store the logged-in user's email in localStorage
     localStorage.setItem("loggedInUser", JSON.stringify({ uid: user.uid, email: user.email }));
 
-    document.getElementById("auth-message").textContent = `Login successful! Welcome back, ${user.email}`;
+    document.getElementById("auth-message").textContent = `Login successful! Welcome back ${user.email}, please refresh the page to access the "Back to Profiles" button.`;
   } catch (error) {
     document.getElementById("auth-message").textContent = `Error: ${error.message}`;
   }
