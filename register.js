@@ -14,19 +14,6 @@ const firebaseConfig = {
   measurementId: "G-7VRSFQCQ9Y",
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-  const backToProfilesLink = document.getElementById('back-to-profiles');
-
-  // Check if the user is logged in
-  const isLoggedIn = localStorage.getItem('loggedInUser'); // Adjust based on your authentication system
-
-  if (isLoggedIn) {
-    backToProfilesLink.style.display = 'block'; // Show the button if logged in
-  } else {
-    backToProfilesLink.style.display = 'none'; // Hide the button if not logged in
-  }
-});
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
