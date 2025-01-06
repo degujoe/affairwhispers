@@ -185,9 +185,9 @@ async function showSubscriptionPopup() {
             <li><strong>Contact Feature Unlocked:</strong> Directly connect with all profiles.</li>
             <li><strong>Discreet:</strong> Payment appears as AMZNMKTPLACE (same as purchasing from Amazon).</li>
             <li><strong>No Hidden Fees:</strong> Transparent pricing with no surprises.</li>
-            <li><strong>Great Value:</strong> All for just <strong>£30!</strong></li>
+            <li><strong>Free Trial:</strong><strong>7-Day free trial</strong></li>
           </ul>
-          <button id="proceed-to-payment" class="btn-primary">Proceed to Payment</button>
+          <button id="proceed-to-payment" class="btn-primary">Start Trial</button>
           <button onclick="closeModal()" class="btn-secondary">Cancel</button>
         </div>
       `;
