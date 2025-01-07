@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function checkMembership(email) {
   try {
-    const response = await fetch('https://3642-86-160-46-121.ngrok-free.app/check-subscription', {
+    const response = await fetch('https://4a4b-86-160-46-121.ngrok-free.app/check-subscription', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
